@@ -30,7 +30,7 @@ namespace ArbolesDeHuffman
             return head;
         }
 
-        public static NodoCP<T> push(NodoCP<T> Padre, T Nuevo, Delegate Comparacion)
+        public NodoCP<T> push(NodoCP<T> Padre, T Nuevo, Delegate Comparacion)
         {
             NodoCP<T> Empieza = (Padre);
             NodoCP<T> Temporal = new NodoCP<T>();

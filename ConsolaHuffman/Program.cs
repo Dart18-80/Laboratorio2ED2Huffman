@@ -19,7 +19,7 @@ namespace ConsolaHuffman
             {
                 Console.WriteLine("Ingrese un numero");
                 int num = Convert.ToInt32(Console.ReadLine());
-                
+                ArbolHuff.push(nodo, num, InvocarNumero);
 
                 Console.WriteLine("salida??");
                 int salida = Convert.ToInt32(Console.ReadLine());
