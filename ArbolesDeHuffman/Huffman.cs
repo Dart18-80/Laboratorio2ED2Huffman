@@ -6,8 +6,10 @@ using System.Threading.Tasks;
 
 namespace ArbolesDeHuffman
 {
-    public interface Huffman
+    public interface Huffman<T>
     {
         int index { get; set; }
+
+        T SumaDeIndices(T a , T b);
     }
 }

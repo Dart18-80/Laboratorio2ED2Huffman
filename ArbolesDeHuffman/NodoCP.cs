@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ArbolesDeHuffman
 {
-    public class NodoCP <T> where T : IComparable
+    public class NodoCP<T> where T : IComparable
     {
         public T Data { get; set; }
         public bool Letra { get; set; }

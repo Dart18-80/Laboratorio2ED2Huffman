@@ -25,7 +25,7 @@ namespace ArbolesDeHuffman
 
                     NodoCP<T> NodoNuevo = new NodoCP<T>();
                     //Se debe de hacer una suma
-
+                    NodoNuevo.Data = Suma.DynamicInvoke(HijoDerecho.Data,HijoIzquierdo.Data);
 
                     NodoNuevo.Derecha = HijoDerecho;
                     NodoNuevo.Izquierda = HijoIzquierdo;
