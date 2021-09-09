@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace ArbolesDeHuffman
 {
-    public interface Huffman
+    class ArbolDeHuffman <T> where T : IComparable
     {
-        int index { get; set; }
+
+
     }
 }
