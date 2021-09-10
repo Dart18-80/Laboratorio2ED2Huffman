@@ -25,7 +25,7 @@ namespace ArbolesDeHuffman
 
                     NodoCP<T> NodoNuevo = new NodoCP<T>();
                     //Se debe de hacer una suma
-                    NodoNuevo.Data = Suma.DynamicInvoke(HijoDerecho.Data,HijoIzquierdo.Data);
+                    NodoNuevo.Data = (T)Convert.ChangeType(Suma.DynamicInvoke(HijoDerecho.Data,HijoIzquierdo.Data),typeof(T));
 
                     NodoNuevo.Derecha = HijoDerecho;
                     NodoNuevo.Izquierda = HijoIzquierdo;
@@ -39,7 +39,7 @@ namespace ArbolesDeHuffman
                 }
                 else 
                 {
-                    
+                    // Arbol de Huffman Terminado
                 }
             }
 

@@ -9,7 +9,6 @@ namespace ArbolesDeHuffman
     public interface Huffman<T>
     {
         int index { get; set; }
-
         T SumaDeIndices(T a , T b);
     }
 }
