@@ -10,6 +10,7 @@ namespace Laboratorio2ED2.Models
     {
         public double index { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public string Letra { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public string Binario { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         public int CompareToIndices(int x, int y) 
         {
