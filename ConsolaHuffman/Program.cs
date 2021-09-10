@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Linq;
 using ArbolesDeHuffman;
+using Laboratorio2ED2.Models;
+
 namespace ConsolaHuffman
 {
     class Program
@@ -9,8 +11,8 @@ namespace ConsolaHuffman
 
         static void Main(string[] args)
         {
-            ColaDePrioridad<int> ArbolHuff = new ColaDePrioridad<int>();
-            NodoCP<int> nodo = new NodoCP<int>(); 
+            ColaDePrioridad<Letras> ArbolHuff = new ColaDePrioridad<Letras>();
+            NodoCP<Letras> nodo = new NodoCP<Letras>(); 
             Comparable CallNum = new Comparable();
             DelegadosN InvocarNumero = new DelegadosN(CallNum.CompareToNumero);//llamado del delegado
 

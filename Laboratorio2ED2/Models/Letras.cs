@@ -8,7 +8,7 @@ namespace Laboratorio2ED2.Models
 {
     public class Letras : Huffman<Letras>, IComparable
     {
-        public int index { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public double index { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public string Letra { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         public int CompareToIndices(int x, int y) 
