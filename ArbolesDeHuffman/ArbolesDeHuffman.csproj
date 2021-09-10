@@ -41,6 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ArbolDeHuffman.cs" />
     <Compile Include="ColaDePrioridad.cs" />
     <Compile Include="Huffman.cs" />
     <Compile Include="NodoCP.cs" />
