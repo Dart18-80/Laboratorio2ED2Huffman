@@ -8,8 +8,8 @@ namespace ArbolesDeHuffman
 {
     public class ColaDePrioridad <T> where T : IComparable
     {
-        public static NodoCP<T> NodoCPPadre = new NodoCP<T>();
-        public static NodoCP<T> Ultima = new NodoCP<T>();
+        public  NodoCP<T> NodoCPPadre = new NodoCP<T>();
+        public  NodoCP<T> Ultima = new NodoCP<T>();
 
         public void ConstruirArbol(NodoCP<T> Head,Delegate Comparacion, Delegate Suma) 
         {
@@ -45,7 +45,19 @@ namespace ArbolesDeHuffman
 
         }
 
-        public static NodoCP<T> newNode(T Nuevo)
+        string Codificacion = "";
+        public  void printCode(NodoCP<T> root, string s, Delegate Compa)
+        {
+            if (root.Izquierda == null && root.Derecha == null && root.Letra == true)
+            {
+                root.Data = (T)Convert.ChangeType(Compa.DynamicInvoke(root.Data,s), typeof(T));
+                return;
+            }
+            printCode(root.Izquierda, s + "0",Compa);
+            printCode(root.Derecha, s + "1", Compa);
+        }
+
+        public NodoCP<T> newNode(T Nuevo)
         {
             NodoCP<T> temp = new NodoCP<T>();
             temp.Data = Nuevo;
@@ -55,7 +67,7 @@ namespace ArbolesDeHuffman
         }
 
 
-        public static NodoCP<T> pop(NodoCP<T> head) //Enviar El Primero
+        public  NodoCP<T> pop(NodoCP<T> head) //Enviar El Primero
         {
             NodoCP<T> Aux = head;
             head.Data = Ultima.Data;
@@ -107,7 +119,7 @@ namespace ArbolesDeHuffman
             }
         }
 
-        public static int isEmpty(NodoCP<T> head)
+        public  int isEmpty(NodoCP<T> head)
         {
             return ((head) == null) ? 1 : 0;
         }

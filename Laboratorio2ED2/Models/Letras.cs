@@ -36,5 +36,12 @@ namespace Laboratorio2ED2.Models
             return Nuevo; 
 
         }
+
+        public Letras AsignarBinario(Letras b,string a)
+        {
+            b.Binario = a;
+            return b;
+
+        }
     }
 }
