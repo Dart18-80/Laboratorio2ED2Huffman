@@ -121,7 +121,7 @@ namespace ArbolesDeHuffman
 
         public  int isEmpty(NodoCP<T> head)
         {
-            return ((head) == null) ? 1 : 0;
+            return ((head.Data) == null) ? 1 : 0;
         }
     }
 }
