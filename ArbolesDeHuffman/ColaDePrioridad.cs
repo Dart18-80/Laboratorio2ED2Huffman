@@ -97,7 +97,7 @@ namespace ArbolesDeHuffman
             {
                 if (isEmpty(Padre.Siguiente) == 0)
                 {
-                    int Comparacion = Convert.ToInt32(Menor.DynamicInvoke(Padre.Data, Padre.Siguiente));
+                    int Comparacion = Convert.ToInt32(Menor.DynamicInvoke(Padre.Data, Padre.Siguiente.Data));
                     if (Comparacion > 0)
                     {
                         T Aux = Padre.Data;
