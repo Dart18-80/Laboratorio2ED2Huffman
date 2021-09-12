@@ -52,7 +52,7 @@ namespace ConsolaHuffman
                     CadenaText[i, 1] = (CadenaText[i, 0]/ totalnumero);
                 }
 
-                for (int i = 0; i < Aux.Length-1; i++) 
+                for (int i = 0; i < Aux.Length; i++) 
                 {
                     Letras Nuevo = new Letras();
                     Nuevo.index = CadenaText[i, 1];
@@ -63,7 +63,7 @@ namespace ConsolaHuffman
                 }
 
                 ArbolHuff.ConstruirArbol(ArbolHuff.NodoCPPadre.Siguiente, InvocarNumero, SumaProcentrajes);
-                ArbolHuff.printCode(ArbolHuff.NodoCPPadre,"",CodigosBinario);
+                ArbolHuff.printCode(ArbolHuff.Ultima,"",CodigosBinario);
 
                 //para mandar la letra se llama Aux[i]      String
                 //para llamar a la frecuencia CadenaText[i,0]    Double
