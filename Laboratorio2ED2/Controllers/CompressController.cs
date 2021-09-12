@@ -11,10 +11,10 @@ namespace Laboratorio2ED2.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CodificacionController : ControllerBase
+    public class CompressController : ControllerBase
     {
         public readonly IHostingEnvironment fistenviroment;
-        public CodificacionController(IHostingEnvironment enviroment)
+        public CompressController(IHostingEnvironment enviroment)
         {
             this.fistenviroment = enviroment;
         }
@@ -27,9 +27,10 @@ namespace Laboratorio2ED2.Controllers
 
         public IActionResult Post([FromForm] IFormFile files) //para poder llamarlo se necesita poner el noombre files en la key
         {
-            if (files!=null)
+            string uploadsFolder = null;
+            if (files != null)
             {
-                string uploadsFolder = Path.Combine(fistenviroment.ContentRootPath, "Upload");
+                uploadsFolder = Path.Combine(fistenviroment.ContentRootPath, "Upload");
                 string filepath = Path.Combine(uploadsFolder, files.FileName);
                 if (!System.IO.File.Exists(filepath))
                 {
@@ -39,9 +40,14 @@ namespace Laboratorio2ED2.Controllers
                     }
                 }
                 string ccc = System.IO.File.ReadAllText(filepath);// es el texto del archivo de texto
-
             }
-            return Ok();
+
+            string jaja = "10101010010010010010101010101010010100101010010101";
+            string direccionNuevo = Path.Combine(uploadsFolder, files.Name+".huff");
+            //Se realiza un archivo .huff
+            using (StreamWriter outFile = new StreamWriter(direccionNuevo))
+                outFile.WriteLine(jaja);
+                return Ok();
         }
     }
 }
