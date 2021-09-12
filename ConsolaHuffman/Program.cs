@@ -62,7 +62,7 @@ namespace ConsolaHuffman
                     ArbolHuff.push(ArbolHuff.NodoCPPadre, ArbolHuff.newNode(Nuevo));
                 }
 
-                ArbolHuff.ConstruirArbol(ArbolHuff.NodoCPPadre, InvocarNumero, SumaProcentrajes);
+                ArbolHuff.ConstruirArbol(ArbolHuff.NodoCPPadre.Siguiente, InvocarNumero, SumaProcentrajes);
                 ArbolHuff.printCode(ArbolHuff.NodoCPPadre,"",CodigosBinario);
 
                 //para mandar la letra se llama Aux[i]      String

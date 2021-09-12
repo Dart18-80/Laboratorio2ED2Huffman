@@ -39,7 +39,7 @@ namespace ArbolesDeHuffman
                 }
                 else 
                 {
-                    // Arbol de Huffman Terminado
+                    NodoCPPadre = Head;
                 }
             }
 
