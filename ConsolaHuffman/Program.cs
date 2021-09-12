@@ -52,7 +52,7 @@ namespace ConsolaHuffman
                     CadenaText[i, 1] = (CadenaText[i, 0]/ totalnumero);
                 }
 
-                for (int i = 0; i < arrayCaracteres.Length; i++) 
+                for (int i = 0; i < arrayCaracteres.Length-1; i++) 
                 {
                     Letras Nuevo = new Letras();
                     Nuevo.index = CadenaText[i, 1];
