@@ -8,6 +8,7 @@ namespace ConsolaHuffman
     class Program
     {
         delegate int DelegadosN(Letras Numero1, Letras Numero2);
+        delegate int DelegadoClaseNumero(Letras Numero1);
         delegate Letras DelegadoLetras(Letras Aux1, Letras Aux2);
         delegate Letras DelegadoBinario(Letras Asignacion, string Codigo);
 
@@ -19,9 +20,7 @@ namespace ConsolaHuffman
                 NodoCP<Letras> nodo = new NodoCP<Letras>();
                 Letras AuxiliarDelegados = new Letras();
 
-
-                Comparable CallNum = new Comparable();
-
+                DelegadoClaseNumero Finalizacion = new DelegadoClaseNumero(AuxiliarDelegados.CompareToSalida);
                 DelegadoBinario CodigosBinario = new DelegadoBinario(AuxiliarDelegados.AsignarBinario);
                 DelegadosN InvocarNumero = new DelegadosN(AuxiliarDelegados.CompareToIndices);//llamado del delegado
                 DelegadoLetras SumaProcentrajes = new DelegadoLetras(AuxiliarDelegados.SumaDeIndices);
@@ -65,7 +64,7 @@ namespace ConsolaHuffman
 
                     ArbolHuff.Heap(ArbolHuff.NodoCPPadre, InvocarNumero);
 
-                    ArbolHuff.ConstruirArbol(ArbolHuff.NodoCPPadre, InvocarNumero, SumaProcentrajes);
+                    ArbolHuff.ConstruirArbol(ArbolHuff.NodoCPPadre, InvocarNumero, SumaProcentrajes, Finalizacion);
                     ArbolHuff.printCode(ArbolHuff.Ultima,"",CodigosBinario);
 
                     //para mandar la letra se llama Aux[i]      String

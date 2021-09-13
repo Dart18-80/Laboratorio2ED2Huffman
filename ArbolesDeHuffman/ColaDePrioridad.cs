@@ -11,35 +11,36 @@ namespace ArbolesDeHuffman
         public  NodoCP<T> NodoCPPadre = new NodoCP<T>();
         public  NodoCP<T> Ultima = new NodoCP<T>();
 
-        public void ConstruirArbol(NodoCP<T> Head,Delegate Comparacion, Delegate Suma) 
+        public void ConstruirArbol(NodoCP<T> Head,Delegate Comparacion, Delegate Suma, Delegate CompFinalizacion) 
         {
             if (isEmpty(Head) == 0) 
             {
-                if (isEmpty(Head.Siguiente) == 0)
+                int i = Convert.ToInt32(CompFinalizacion.DynamicInvoke(Head.Data));
+                if (i != 0) 
                 {
+                    NodoCP<T> HijoIzquierdo = new NodoCP<T>();
                     NodoCP<T> HijoDerecho = pop(Head, Comparacion);
-                    Heap(NodoCPPadre,Comparacion);
-
-                    NodoCP<T> HijoIzquierdo = pop(Head,Comparacion);
-                    Heap(NodoCPPadre,Comparacion);
-
-                    NodoCP<T> NodoNuevo = new NodoCP<T>();
-                    //Se debe de hacer una suma
-                    NodoNuevo.Data = (T)Convert.ChangeType(Suma.DynamicInvoke(HijoDerecho.Data,HijoIzquierdo.Data),typeof(T));
-
-                    NodoNuevo.Derecha = HijoDerecho;
-                    NodoNuevo.Izquierda = HijoIzquierdo;
-
-                    NodoNuevo.Letra = false;
-
-                    push(NodoCPPadre, NodoNuevo);
                     Heap(NodoCPPadre, Comparacion);
 
-                    ConstruirArbol(NodoCPPadre, Comparacion, Suma);
-                }
-                else 
-                {
-                    
+                    if (isEmpty(Head.Siguiente) == 0)
+                    {
+
+                        HijoIzquierdo = pop(Head, Comparacion);
+                        Heap(NodoCPPadre, Comparacion);
+                        NodoCP<T> NodoNuevo = new NodoCP<T>();
+                        //Se debe de hacer una suma
+                        NodoNuevo.Data = (T)Convert.ChangeType(Suma.DynamicInvoke(HijoDerecho.Data, HijoIzquierdo.Data), typeof(T));
+
+                        NodoNuevo.Derecha = HijoDerecho;
+                        NodoNuevo.Izquierda = HijoIzquierdo;
+
+                        NodoNuevo.Letra = false;
+
+                        push(NodoCPPadre, NodoNuevo);
+                        Heap(NodoCPPadre, Comparacion);
+
+                        ConstruirArbol(NodoCPPadre, Comparacion, Suma, CompFinalizacion);
+                    }
                 }
             }
 

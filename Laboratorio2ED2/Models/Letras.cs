@@ -23,6 +23,18 @@ namespace Laboratorio2ED2.Models
                 return 1;
         }
 
+        public int CompareToSalida(Letras x)
+        {
+            if (x.index > 0.97 && x.index < 1.2)
+            {
+                return 0;
+            }
+            else 
+            {
+                return 1;
+            }
+        }
+
         public int CompareTo(object obj)
         {
             throw new NotImplementedException();
@@ -34,7 +46,6 @@ namespace Laboratorio2ED2.Models
             Nuevo.index = a.index + b.index;
             Nuevo.Letra = null;
             return Nuevo; 
-
         }
 
         public Letras AsignarBinario(Letras b,string a)
