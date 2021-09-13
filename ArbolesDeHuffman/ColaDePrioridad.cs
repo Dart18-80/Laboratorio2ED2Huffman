@@ -17,11 +17,11 @@ namespace ArbolesDeHuffman
             {
                 if (isEmpty(Head.Siguiente) == 0)
                 {
-                    NodoCP<T> HijoDerecho = pop(Head);
-                    Heap(NodoCPPadre, Comparacion);
+                    NodoCP<T> HijoDerecho = pop(Head, Comparacion);
+                    Heap(NodoCPPadre,Comparacion);
 
-                    NodoCP<T> HijoIzquierdo = pop(Head);
-                    Heap(NodoCPPadre, Comparacion);
+                    NodoCP<T> HijoIzquierdo = pop(Head,Comparacion);
+                    Heap(NodoCPPadre,Comparacion);
 
                     NodoCP<T> NodoNuevo = new NodoCP<T>();
                     //Se debe de hacer una suma
@@ -39,7 +39,7 @@ namespace ArbolesDeHuffman
                 }
                 else 
                 {
-                    NodoCPPadre = Head;
+                    
                 }
             }
 
@@ -67,23 +67,40 @@ namespace ArbolesDeHuffman
         }
 
 
-        public  NodoCP<T> pop(NodoCP<T> head) //Enviar El Primero
+        public  NodoCP<T> pop(NodoCP<T> head, Delegate Iguales) //Enviar El Primero
         {
             NodoCP<T> Aux = head;
             head.Data = Ultima.Data;
             head.Derecha = Ultima.Derecha;
             head.Izquierda = Ultima.Izquierda;
             Aux.Siguiente = null;
+
+            Eliminar(head.Siguiente, Ultima, Iguales);
             return Aux;
         }
-
+        public void Eliminar(NodoCP<T> NodoPrincipal, NodoCP<T> Search, Delegate Iguales)
+        {
+            int ig = Convert.ToInt32(Iguales.DynamicInvoke(NodoPrincipal.Data, Search.Data));
+            if (ig == 0 ) 
+            {
+                NodoPrincipal.Siguiente = null;
+                Ultima = NodoPrincipal;
+            }
+            else 
+            {
+                Eliminar(NodoPrincipal.Siguiente, Search, Iguales);
+            }
+        }
         public void push(NodoCP<T> Padre, NodoCP<T> Nuevo) //Insertar uno nuevo 
         {
-            NodoCP<T> Temporal = Padre;
-            if (isEmpty(Padre.Siguiente) == 1)
+            if(isEmpty(Padre) == 1) 
+            {
+                NodoCPPadre = Nuevo;
+            }
+            else if (isEmpty(Padre.Siguiente) == 1)
             {
                 Padre.Siguiente = Nuevo;
-                Ultima = Nuevo;
+                Ultima = Padre.Siguiente;
             }
             else 
             {
@@ -105,7 +122,7 @@ namespace ArbolesDeHuffman
                         NodoCP<T> IzquierdoPequeño = Padre.Izquierda;
                         Padre.Data = Padre.Siguiente.Data;
                         Padre.Derecha = Padre.Siguiente.Derecha;
-                        Padre.Izquierda = Padre.Siguiente.Siguiente;
+                        Padre.Izquierda = Padre.Siguiente.Izquierda;
                         Padre.Siguiente.Data = Aux;
                         Padre.Siguiente.Derecha = DerechaPequeño;
                         Padre.Siguiente.Izquierda = IzquierdoPequeño;
@@ -113,7 +130,7 @@ namespace ArbolesDeHuffman
                     }
                     else
                     {
-                        Heap(NodoCPPadre.Siguiente, Menor);
+                        Heap(Padre.Siguiente, Menor);
                     }
                 }
             }

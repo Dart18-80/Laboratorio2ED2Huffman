@@ -12,9 +12,9 @@ namespace Laboratorio2ED2.Models
         public string Letra { get; set; }
         public string Binario { get; set; }
 
-        public int CompareToIndices(int x, int y) 
+        public int CompareToIndices(Letras x, Letras y) 
         {
-            int Comparar = x.CompareTo(y);
+            int Comparar = x.index.CompareTo(y.index);
             if (Comparar == 0)
                 return 0;
             else if (Comparar < 0)
