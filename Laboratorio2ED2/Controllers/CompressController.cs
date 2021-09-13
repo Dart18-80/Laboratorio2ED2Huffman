@@ -9,7 +9,6 @@ using System.IO;
 
 namespace Laboratorio2ED2.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
     public class CompressController : ControllerBase
     {
@@ -22,9 +21,8 @@ namespace Laboratorio2ED2.Controllers
         {
             public IFormFile files { get; set; }
         }
-
+        [Route("api/compress")]
         [HttpPost]
-
         public IActionResult Post([FromForm] IFormFile files) //para poder llamarlo se necesita poner el noombre files en la key
         {
             string uploadsFolder = null;
@@ -48,6 +46,13 @@ namespace Laboratorio2ED2.Controllers
             using (StreamWriter outFile = new StreamWriter(direccionNuevo))
                 outFile.WriteLine(jaja);
                 return Ok();
+        }
+        [Route("api/compressions")]
+        [HttpGet]
+        public IActionResult GetDatosCompresion() 
+        {
+
+         return Ok();
         }
     }
 }
