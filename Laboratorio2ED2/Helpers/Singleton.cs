@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Laboratorio2ED2.Models;
 
 namespace Laboratorio2ED2.Helpers
 {
@@ -17,9 +18,7 @@ namespace Laboratorio2ED2.Helpers
             }
         }
 
-        //Tenes que insertar aqui lo que queres guardar 
-
-
+        public List<CompresionesT> DatosCompresiones = new List<CompresionesT>();
 
     }
 }
