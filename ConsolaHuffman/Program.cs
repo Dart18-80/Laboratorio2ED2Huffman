@@ -50,9 +50,9 @@ namespace ConsolaHuffman
                             }
                         }
                         CadenaText[i, 0] = cont;
-                        CadenaText[i, 1] = (CadenaText[i, 0]/ totalnumero);
+                        decimal numerodecima = decimal.Round(Convert.ToDecimal((CadenaText[i, 0] / totalnumero)), 3);
+                        CadenaText[i, 1] = Convert.ToDouble(numerodecima);
                     }
-
                     for (int i = 0; i < Aux.Length; i++) 
                     {
                         Letras Nuevo = new Letras();
