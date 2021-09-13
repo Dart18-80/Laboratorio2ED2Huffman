@@ -11,5 +11,8 @@ namespace ArbolesDeHuffman
         double index { get; set; }
         string Binario { get; set; }
         T SumaDeIndices(T a , T b);
+        int CompareToIndices(T x, T y);
+        int CompareToSalida(T x);
+        T AsignarBinario(T b, string a);
     }
 }
