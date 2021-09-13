@@ -11,6 +11,7 @@ namespace ConsolaHuffman
         delegate int DelegadoClaseNumero(Letras Numero1);
         delegate Letras DelegadoLetras(Letras Aux1, Letras Aux2);
         delegate Letras DelegadoBinario(Letras Asignacion, string Codigo);
+        delegate int DelegadoImpresion (Letras Asignacion, char Codigo);
 
         static void Main(string[] args)
         {
@@ -24,6 +25,7 @@ namespace ConsolaHuffman
                 DelegadoBinario CodigosBinario = new DelegadoBinario(AuxiliarDelegados.AsignarBinario);
                 DelegadosN InvocarNumero = new DelegadosN(AuxiliarDelegados.CompareToIndices);//llamado del delegado
                 DelegadoLetras SumaProcentrajes = new DelegadoLetras(AuxiliarDelegados.SumaDeIndices);
+                DelegadoImpresion Impresion = new DelegadoImpresion(AuxiliarDelegados.CompareToimpresion);
 
                 Console.WriteLine("Codificacion de Huffman");
                 bool verificacion = true;
@@ -66,15 +68,21 @@ namespace ConsolaHuffman
 
                     ArbolHuff.ConstruirArbol(ArbolHuff.NodoCPPadre, InvocarNumero, SumaProcentrajes, Finalizacion);
 
-                    NodoCP<Letras> coleccion = ArbolHuff.NodoCPPadre;
-
                     ArbolHuff.printCode(ArbolHuff.NodoCPPadre,"",CodigosBinario);
 
-                    coleccion = ArbolHuff.NodoCPPadre;
+                    string Codificacion = "";
+                    for (int i = 0; i < totalnumero; i++)
+                    {
+                        ArbolHuff.printCodeLate(ArbolHuff.NodoCPPadre, arrayCaracteres[i], Impresion);
+                        Codificacion += ArbolHuff.Enviar.Binario;
+                    }
+
+                    NodoCP<Letras> coleccion = ArbolHuff.NodoCPPadre;
+
+                    Console.WriteLine(Codificacion);
 
                     //para mandar la letra se llama Aux[i]      String
                     //para llamar a la frecuencia CadenaText[i,0]    Double
-
                     //para llamar a la probabilidad Cadenatext[i,1]    Double
 
                     Console.WriteLine("desea salir? presione 1");

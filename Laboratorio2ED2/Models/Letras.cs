@@ -23,6 +23,17 @@ namespace Laboratorio2ED2.Models
                 return 1;
         }
 
+        public int CompareToimpresion(Letras x, char y)
+        {
+            if (x.Letra == Convert.ToString(y))
+            {
+                return 0;
+            }
+            else
+            {
+                return 1;
+            }
+        }
         public int CompareToSalida(Letras x)
         {
             if (x.index > 0.8 && x.index < 1.2)
@@ -52,7 +63,6 @@ namespace Laboratorio2ED2.Models
         {
             b.Binario = a;
             return b;
-
         }
     }
 }

@@ -10,6 +10,7 @@ namespace ArbolesDeHuffman
     {
         public  NodoCP<T> NodoCPPadre = new NodoCP<T>();
         public  NodoCP<T> Ultima = new NodoCP<T>();
+        public T Enviar;
 
         public void ConstruirArbol(NodoCP<T> Head,Delegate Comparacion, Delegate Suma, Delegate CompFinalizacion) 
         {
@@ -51,6 +52,7 @@ namespace ArbolesDeHuffman
         {
             if (isEmpty(root.Izquierda) == 1  && isEmpty(root.Derecha) == 1)
             {
+                root.Letra = true;
                 root.Data = (T)Convert.ChangeType(Compa.DynamicInvoke(root.Data,s), typeof(T));
                 return;
             }
@@ -58,15 +60,22 @@ namespace ArbolesDeHuffman
             printCode(root.Derecha, s + "1", Compa);
         }
 
-        public void printCodeLate(NodoCP<T> root, string s, Delegate Compa)
+        public void printCodeLate(NodoCP<T> root, char s, Delegate Compa)
         {
-            if (isEmpty(root.Derecha) == 1 && isEmpty(root.Izquierda) == 1)
+            if (isEmpty(root.Izquierda) == 1 && isEmpty(root.Derecha) == 1)
             {
-                root.Data = (T)Convert.ChangeType(Compa.DynamicInvoke(root.Data, s), typeof(T));
-                return;
+                if (isEmpty(root) == 0) 
+                {
+                    int Comparacion = Convert.ToInt32(Compa.DynamicInvoke(root.Data, s));
+                    if (Comparacion == 0) 
+                    {
+                        Enviar = root.Data;
+                    }
+                    return;
+                }
             }
-            printCode(root.Derecha, s + "1", Compa);
-            printCode(root.Izquierda, s + "0", Compa);
+            printCodeLate(root.Izquierda, s, Compa);
+            printCodeLate(root.Derecha, s, Compa);
         }
 
         public NodoCP<T> newNode(T Nuevo)
