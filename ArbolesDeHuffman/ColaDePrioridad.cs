@@ -78,12 +78,12 @@ namespace ArbolesDeHuffman
             head.Derecha = Ultima.Derecha;
             head.Izquierda = Ultima.Izquierda;
 
-            Eliminar(head.Siguiente, Ultima, Iguales);
+            Eliminar(head, Ultima, Iguales);
             return Aux;
         }
         public void Eliminar(NodoCP<T> NodoPrincipal, NodoCP<T> Search, Delegate Iguales)
         {
-            int ig = Convert.ToInt32(Iguales.DynamicInvoke(NodoPrincipal.Data, Search.Data));
+            int ig = Convert.ToInt32(Iguales.DynamicInvoke(NodoPrincipal.Siguiente.Data, Search.Data));
             if (ig == 0 ) 
             {
                 NodoPrincipal.Siguiente = null;
