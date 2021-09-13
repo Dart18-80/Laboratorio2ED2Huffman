@@ -65,7 +65,12 @@ namespace ConsolaHuffman
                     ArbolHuff.Heap(ArbolHuff.NodoCPPadre, InvocarNumero);
 
                     ArbolHuff.ConstruirArbol(ArbolHuff.NodoCPPadre, InvocarNumero, SumaProcentrajes, Finalizacion);
-                    ArbolHuff.printCode(ArbolHuff.Ultima,"",CodigosBinario);
+
+                    NodoCP<Letras> coleccion = ArbolHuff.NodoCPPadre;
+
+                    ArbolHuff.printCode(ArbolHuff.NodoCPPadre,"",CodigosBinario);
+
+                    coleccion = ArbolHuff.NodoCPPadre;
 
                     //para mandar la letra se llama Aux[i]      String
                     //para llamar a la frecuencia CadenaText[i,0]    Double

@@ -25,7 +25,7 @@ namespace Laboratorio2ED2.Models
 
         public int CompareToSalida(Letras x)
         {
-            if (x.index > 0.97 && x.index < 1.2)
+            if (x.index > 0.8 && x.index < 1.2)
             {
                 return 0;
             }
