@@ -69,11 +69,14 @@ namespace ArbolesDeHuffman
 
         public  NodoCP<T> pop(NodoCP<T> head, Delegate Iguales) //Enviar El Primero
         {
-            NodoCP<T> Aux = head;
+            NodoCP<T> Aux = new NodoCP<T>();
+            Aux.Data = head.Data;
+            Aux.Derecha = head.Derecha;
+            Aux.Izquierda = head.Izquierda;
+
             head.Data = Ultima.Data;
             head.Derecha = Ultima.Derecha;
             head.Izquierda = Ultima.Izquierda;
-            Aux.Siguiente = null;
 
             Eliminar(head.Siguiente, Ultima, Iguales);
             return Aux;
