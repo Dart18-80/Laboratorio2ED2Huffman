@@ -82,9 +82,19 @@ namespace ConsolaHuffman
 
                     Console.WriteLine(Codificacion);
 
-                    //para mandar la letra se llama Aux[i]      String
-                    //para llamar a la frecuencia CadenaText[i,0]    Double
-                    //para llamar a la probabilidad Cadenatext[i,1]    Double
+                    // Descodificacion 
+
+                    //Valores de letras con la frecuencia
+                    string LetrasFrecuencia = "";
+
+                    for (int i = 0; i< Aux.Length; i++) 
+                    {
+                        string Binario = DecimalBinario(Convert.ToInt32(CadenaText[i, 0]));
+                        LetrasFrecuencia = Convert.ToString(Aux[i])+","+ Binario;
+                    }
+
+
+
 
                     Console.WriteLine("desea salir? presione 1");
                     int a = Convert.ToInt32(Console.ReadLine());
@@ -100,7 +110,7 @@ namespace ConsolaHuffman
             }
         }
 
-        public string DecimalBinario(int numero) 
+        public static string DecimalBinario(int numero) 
         {
             string binario = "";
             if (numero>0)
