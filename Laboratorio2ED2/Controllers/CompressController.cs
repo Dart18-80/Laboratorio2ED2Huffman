@@ -129,5 +129,29 @@ namespace Laboratorio2ED2.Controllers
 
          return Singleton.Intance.DatosCompresiones;
         }
+
+        [Route("api/desconpress")]
+        [HttpPost]
+        public IActionResult Descomprimirtexto([FromForm] IFormFile files)
+        {
+            string uploadsFolder = null;
+            string ccc = null;
+            if (files != null)
+            {
+                uploadsFolder = Path.Combine(fistenviroment.ContentRootPath, "Upload");
+                string filepath = Path.Combine(uploadsFolder, files.FileName);
+                if (!System.IO.File.Exists(filepath))
+                {
+                    using (var INeadLearn = new FileStream(filepath, FileMode.CreateNew))
+                    {
+                        files.CopyTo(INeadLearn);
+                    }
+                }
+                ccc = System.IO.File.ReadAllText(filepath);// es el texto del archivo de texto
+                string nuevocccc = ccc.Replace("\r\n","");
+            }
+
+            return Ok();
+        }
     }
 }
