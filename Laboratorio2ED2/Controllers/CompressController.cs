@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Hosting;
 using System.IO;
 using Laboratorio2ED2.Models;
 using ArbolesDeHuffman;
+using Laboratorio2ED2.Helpers;
 
 namespace Laboratorio2ED2.Controllers
 {
@@ -94,23 +95,39 @@ namespace Laboratorio2ED2.Controllers
                 Codificacion += ArbolHuff.Enviar.Binario;
             }
 
-            int razonOriginal = (ccc.Length / 8);
-            int razonComprimida = (Codificacion.Length) / 8;
-
             //Se realiza un archivo .huff
             string uploadsNewFolder = Path.Combine(fistenviroment.ContentRootPath, "UploadHuff");
 
             string direccionNuevo = Path.Combine(uploadsNewFolder, name + ".huff");
+
             using (StreamWriter outFile = new StreamWriter(direccionNuevo))
                 outFile.WriteLine(Codificacion);
-                return Ok("El archivo Huff esta guardado dentro de la carpeta UploadHuff dentro de los archivos del proyecto");
+
+            double razonOriginal = (ccc.Length / 8);
+            double razonComprimida = (Codificacion.Length) / 8;
+            decimal Razcompresion = (Convert.ToDecimal(razonOriginal) / Convert.ToDecimal(razonComprimida));
+            decimal Factcompresion = (Convert.ToDecimal(razonComprimida) / Convert.ToDecimal(razonOriginal));
+            decimal PorcentajeDism = decimal.Round((Convert.ToDecimal(razonComprimida) / Convert.ToDecimal(razonOriginal) * 100), 2);
+            var NuevoArchivo = new CompresionesT
+            {
+                NombreArchivoOriginal = files.FileName,
+                NombreNuevoArchivo = (name + ".huff"),
+                RutaArchivoCompremido = direccionNuevo,
+                Razondecompresion = Convert.ToInt32(Razcompresion),
+                FactordeCompresion=Convert.ToInt32(Factcompresion),
+                PorcentajedeRecduccion=Convert.ToInt32(PorcentajeDism)
+
+            };
+            Singleton.Intance.DatosCompresiones.Add(NuevoArchivo);
+
+            return Ok("El archivo Huff esta guardado dentro de la carpeta UploadHuff dentro de los archivos del proyecto");
         }
-        [Route("compressions")]
+        [Route("api/compressions")]
         [HttpGet]
-        public IActionResult GetDatosCompresion() 
+        public IEnumerable<CompresionesT> GetDatosCompresion() 
         {
 
-         return Ok();
+         return Singleton.Intance.DatosCompresiones;
         }
     }
 }
