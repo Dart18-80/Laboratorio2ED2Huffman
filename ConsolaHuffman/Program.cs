@@ -33,7 +33,7 @@ namespace ConsolaHuffman
                 while (verificacion)
                 {
                     Console.WriteLine("Ingrese el texto que desea comprimir:");
-                    string text = Convert.ToString(Console.ReadLine()).ToUpper();
+                    string text = Convert.ToString(Console.ReadLine());
                     char[] arrayCaracteres = text.ToCharArray();
                     char[] Aux = arrayCaracteres.Distinct().ToArray();
 
