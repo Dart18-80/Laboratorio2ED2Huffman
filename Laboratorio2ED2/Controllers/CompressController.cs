@@ -87,14 +87,23 @@ namespace Laboratorio2ED2.Controllers
             ArbolHuff.Heap(ArbolHuff.NodoCPPadre, InvocarNumero);
             ArbolHuff.ConstruirArbol(ArbolHuff.NodoCPPadre, InvocarNumero, SumaProcentrajes, Finalizacion);
             ArbolHuff.printCode(ArbolHuff.NodoCPPadre, "", CodigosBinario);
+            string Codificacion = "";
+            for (int i = 0; i < arrayleng; i++)
+            {
+                ArbolHuff.printCodeLate(ArbolHuff.NodoCPPadre, ArrayCaracteres[i], Impresion);
+                Codificacion += ArbolHuff.Enviar.Binario;
+            }
 
             int razonOriginal = (ccc.Length / 8);
+            int razonComprimida = (Codificacion.Length) / 8;
 
-            string direccionNuevo = Path.Combine(uploadsFolder, name+".huff");
             //Se realiza un archivo .huff
+            string uploadsNewFolder = Path.Combine(fistenviroment.ContentRootPath, "UploadHuff");
+
+            string direccionNuevo = Path.Combine(uploadsNewFolder, name + ".huff");
             using (StreamWriter outFile = new StreamWriter(direccionNuevo))
-                outFile.WriteLine(texto que quiero meter en el archivo);
-                return Ok();
+                outFile.WriteLine(Codificacion);
+                return Ok("El archivo Huff esta guardado dentro de la carpeta UploadHuff dentro de los archivos del proyecto");
         }
         [Route("compressions")]
         [HttpGet]

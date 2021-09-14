@@ -10,8 +10,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Uploadhuff\" />
     <Folder Include="Upload\" />
+    <Folder Include="UploadHuff\" />
   </ItemGroup>
 
 
