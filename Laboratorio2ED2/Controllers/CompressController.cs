@@ -58,6 +58,7 @@ namespace Laboratorio2ED2.Controllers
                 }
                 ccc = System.IO.File.ReadAllText(filepath);// es el texto del archivo de texto
             }
+
             //Procedimiento para poder separar el texto recibido
             char[] ArrayCaracteres = ccc.ToCharArray();
             char[] Aux = ArrayCaracteres.Distinct().ToArray();
@@ -94,6 +95,13 @@ namespace Laboratorio2ED2.Controllers
                 ArbolHuff.printCodeLate(ArbolHuff.NodoCPPadre, ArrayCaracteres[i], Impresion);
                 Codificacion += ArbolHuff.Enviar.Binario;
             }
+            //se buscan las frecuencias de las letras para mandar en el .huff
+            string LetrasFrecuencia = "";
+            for (int i = 0; i < Aux.Length; i++)
+            {
+                string Binario = DecimalBinario(Convert.ToInt32(CadenaText[i, 0]));
+                LetrasFrecuencia += Convert.ToString(Aux[i]) + "," + Binario+",";
+            }
 
             //Se realiza un archivo .huff
             string uploadsNewFolder = Path.Combine(fistenviroment.ContentRootPath, "UploadHuff");
@@ -101,24 +109,21 @@ namespace Laboratorio2ED2.Controllers
             string direccionNuevo = Path.Combine(uploadsNewFolder, name + ".huff");
 
             using (StreamWriter outFile = new StreamWriter(direccionNuevo))
-                outFile.WriteLine(Codificacion);
-
+                outFile.WriteLine(LetrasFrecuencia+Codificacion);
+            //operaciones para los componentes de los archivos de compresion
             double razonOriginal = (ccc.Length / 8);
             double razonComprimida = (Codificacion.Length) / 8;
-            decimal Razcompresion = (Convert.ToDecimal(razonOriginal) / Convert.ToDecimal(razonComprimida));
-            decimal Factcompresion = (Convert.ToDecimal(razonComprimida) / Convert.ToDecimal(razonOriginal));
+            decimal Razcompresion = decimal.Round((Convert.ToDecimal(razonOriginal) / Convert.ToDecimal(razonComprimida)), 3);
+            decimal Factcompresion = decimal.Round((Convert.ToDecimal(razonComprimida) / Convert.ToDecimal(razonOriginal)), 3);
             decimal PorcentajeDism = decimal.Round((Convert.ToDecimal(razonComprimida) / Convert.ToDecimal(razonOriginal) * 100), 2);
-            var NuevoArchivo = new CompresionesT
-            {
-                NombreArchivoOriginal = files.FileName,
-                NombreNuevoArchivo = (name + ".huff"),
-                RutaArchivoCompremido = direccionNuevo,
-                Razondecompresion = Convert.ToInt32(Razcompresion),
-                FactordeCompresion=Convert.ToInt32(Factcompresion),
-                PorcentajedeRecduccion=Convert.ToInt32(PorcentajeDism)
 
-            };
-            Singleton.Intance.DatosCompresiones.Add(NuevoArchivo);
+            //se crea un archivo donde se guaardaran los datos de tos
+            string uploadcompresion = Path.Combine(fistenviroment.ContentRootPath, "DatosCompresion");
+            string filepathcompresion = Path.Combine(uploadcompresion, "DatosDeLasCompresiones.txt");
+            if (System.IO.File.Exists(filepathcompresion))
+            {
+                System.IO.File.AppendAllText(filepathcompresion, files.FileName + "," + (name + ".huff") + "," + direccionNuevo.ToString() + "," + Razcompresion.ToString() + "," + Factcompresion.ToString() + "," + PorcentajeDism.ToString()+"@");
+            }
 
             return Ok("El archivo Huff esta guardado dentro de la carpeta UploadHuff dentro de los archivos del proyecto");
         }
@@ -126,11 +131,32 @@ namespace Laboratorio2ED2.Controllers
         [HttpGet]
         public IEnumerable<CompresionesT> GetDatosCompresion() 
         {
+            string uploadcompresion = Path.Combine(fistenviroment.ContentRootPath, "DatosCompresion");
+            string filepathcompresion = Path.Combine(uploadcompresion, "DatosDeLasCompresiones.txt");
+            if (System.IO.File.Exists(filepathcompresion))
+            {
+                string ccc = System.IO.File.ReadAllText(filepathcompresion);// es el texto del archivo de texto
+                string[] cadenasplit = ccc.Split('@');
+                for (int i = 0; i < cadenasplit.Length-1; i++)
+                {
+                    string[] cadenaAuxiliar = cadenasplit[i].Split(',');
 
-         return Singleton.Intance.DatosCompresiones;
+                    var Nuevo = new CompresionesT { 
+                    NombreArchivoOriginal=cadenaAuxiliar[0],
+                    NombreNuevoArchivo=cadenaAuxiliar[1],
+                    RutaArchivoCompremido=cadenaAuxiliar[2],
+                    Razondecompresion=Convert.ToDouble(cadenaAuxiliar[3]),
+                    FactordeCompresion= Convert.ToDouble(cadenaAuxiliar[4]),
+                    PorcentajedeRecduccion=Convert.ToDouble(cadenaAuxiliar[5])
+                    };
+                    Singleton.Intance.DatosCompresiones.Add(Nuevo);
+                }
+            }
+
+            return Singleton.Intance.DatosCompresiones;
         }
 
-        [Route("api/desconpress")]
+        [Route("api/decompress")]
         [HttpPost]
         public IActionResult Descomprimirtexto([FromForm] IFormFile files)
         {
@@ -149,9 +175,87 @@ namespace Laboratorio2ED2.Controllers
                 }
                 ccc = System.IO.File.ReadAllText(filepath);// es el texto del archivo de texto
                 string nuevocccc = ccc.Replace("\r\n","");
+                string[] cadenasplit = nuevocccc.Split(',');
+                int ultimocadena = cadenasplit.Length-1;
+                char[] CodigoBinario =(cadenasplit[ultimocadena]).ToCharArray();//separo el codigo binario a un nuevo char
+                double[,] CadenaText = new double[(ultimocadena)/2, 2];//este doule se guarda en la posicion [0,x] la fecuencia y en la posicion [x,1] la probabilidad
+                char[] Aux = new char[ultimocadena/2];// en este char se guardan la letras 
+                int totalletras = 0;
+                int cont = 0, contador=0;
+
+                for (int i = 0; i < ultimocadena; i++)
+                {
+                    if ((i%2)==0)
+                    {
+                        Aux[contador] = Convert.ToChar(cadenasplit[i]);
+                        contador++;
+                    }
+                    else
+                    {
+                        double bindeci = Convert.ToDouble(binariodecimal(cadenasplit[i].ToCharArray()));
+                        totalletras += Convert.ToInt32(bindeci);
+                        CadenaText[cont, 0] = Convert.ToDouble(bindeci);
+                        cont++;
+                    }
+                }
+                for (int i = 0; i < ultimocadena/2; i++)
+                {
+                    decimal numerodecima = decimal.Round(Convert.ToDecimal((CadenaText[i, 0] / totalletras)), 3);
+                    CadenaText[i, 1] = Convert.ToDouble(numerodecima);
+                }
             }
 
             return Ok();
         }
+        public static string DecimalBinario(int numero)
+        {
+            string binario = "";
+            if (numero > 0)
+            {
+                while (numero > 0)
+                {
+                    if (numero % 2 == 0)
+                    {
+                        binario = "0" + binario;
+                    }
+                    else
+                    {
+                        binario = "1" + binario;
+                    }
+                    numero = (int)(numero / 2);
+                }
+                return binario;
+            }
+            else
+            {
+                if (numero == 0)
+                {
+                    return "0";
+                }
+                else
+                {
+                    return "";
+                }
+            }
+
+        }
+
+        public static int binariodecimal(char[] numero) 
+        {
+            int sum = 0;
+            Array.Reverse(numero);
+            for (int i = 0; i<numero.Length; i++)
+            {
+                if (numero[i].ToString() == "1")
+                {
+                  sum += (int)Math.Pow(2, i);
+
+                }
+            }
+            return sum;
+        }
+
+      
     }
+
 }

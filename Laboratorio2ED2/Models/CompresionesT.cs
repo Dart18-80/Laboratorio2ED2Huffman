@@ -10,8 +10,8 @@ namespace Laboratorio2ED2.Models
         public string NombreArchivoOriginal { get; set; }
         public string NombreNuevoArchivo { get; set; }
         public string RutaArchivoCompremido { get; set; }
-        public int Razondecompresion { get; set; }
-        public int FactordeCompresion { get; set; }
-        public int PorcentajedeRecduccion { get; set; }
+        public double Razondecompresion { get; set; }
+        public double FactordeCompresion { get; set; }
+        public double PorcentajedeRecduccion { get; set; }
     }
 }
