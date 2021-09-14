@@ -55,7 +55,6 @@ namespace ConsolaHuffman
                         decimal numerodecima = decimal.Round(Convert.ToDecimal((CadenaText[i, 0] / totalnumero)), 3);
                         CadenaText[i, 1] = Convert.ToDouble(numerodecima);
                     }
-                    ///////
                     for (int i = 0; i < Aux.Length; i++) 
                     {
                         Letras Nuevo = new Letras();
@@ -79,6 +78,7 @@ namespace ConsolaHuffman
                     }
 
                     NodoCP<Letras> coleccion = ArbolHuff.NodoCPPadre;
+                   
 
                     Console.WriteLine(Codificacion);
 
@@ -98,6 +98,39 @@ namespace ConsolaHuffman
             {
                 
             }
+        }
+
+        public string DecimalBinario(int numero) 
+        {
+            string binario = "";
+            if (numero>0)
+            {
+                while (numero > 0)
+                {
+                    if (numero % 2 == 0)
+                    {
+                        binario = "0" + binario;
+                    }
+                    else
+                    {
+                        binario = "1" + binario;
+                    }
+                    numero = (int)(numero / 2);
+                }
+                return binario;
+            }
+            else 
+            {
+                if (numero==0)
+                {
+                    return "0";
+                }
+                else
+                {
+                    return "";
+                }
+            }
+
         }
     }
 }
