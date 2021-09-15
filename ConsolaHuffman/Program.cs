@@ -12,6 +12,8 @@ namespace ConsolaHuffman
         delegate Letras DelegadoLetras(Letras Aux1, Letras Aux2);
         delegate Letras DelegadoBinario(Letras Asignacion, string Codigo);
         delegate int DelegadoImpresion (Letras Asignacion, char Codigo);
+        delegate int DelegadoDescompresion(Letras Asignacion, char Codigo);
+
 
         static void Main(string[] args)
         {

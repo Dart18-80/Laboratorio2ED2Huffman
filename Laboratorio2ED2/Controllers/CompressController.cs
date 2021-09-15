@@ -30,6 +30,9 @@ namespace Laboratorio2ED2.Controllers
         delegate Letras DelegadoLetras(Letras Aux1, Letras Aux2);
         delegate Letras DelegadoBinario(Letras Asignacion, string Codigo);
         delegate int DelegadoImpresion(Letras Asignacion, char Codigo);
+        delegate int DelegadoDescompresion(Letras Asignacion, char Codigo);
+        public static string a = "";
+
 
         [Route("api/compress/{Name}")]
         [HttpPost]
@@ -113,9 +116,16 @@ namespace Laboratorio2ED2.Controllers
             //operaciones para los componentes de los archivos de compresion
             double razonOriginal = (ccc.Length / 8);
             double razonComprimida = (Codificacion.Length) / 8;
-            decimal Razcompresion = decimal.Round((Convert.ToDecimal(razonOriginal) / Convert.ToDecimal(razonComprimida)), 3);
-            decimal Factcompresion = decimal.Round((Convert.ToDecimal(razonComprimida) / Convert.ToDecimal(razonOriginal)), 3);
-            decimal PorcentajeDism = decimal.Round((Convert.ToDecimal(razonComprimida) / Convert.ToDecimal(razonOriginal) * 100), 2);
+            decimal Razcompresion = 0;
+            decimal Factcompresion = 0;
+            decimal PorcentajeDism = 0;
+            if (razonComprimida!=0 && razonOriginal!=0)
+            {
+                Razcompresion = decimal.Round((Convert.ToDecimal(razonOriginal) / Convert.ToDecimal(razonComprimida)), 3);
+                Factcompresion = decimal.Round((Convert.ToDecimal(razonComprimida) / Convert.ToDecimal(razonOriginal)), 3);
+                PorcentajeDism = decimal.Round((Convert.ToDecimal(razonComprimida) / Convert.ToDecimal(razonOriginal) * 100), 2);
+            }
+
 
             //se crea un archivo donde se guaardaran los datos de tos
             string uploadcompresion = Path.Combine(fistenviroment.ContentRootPath, "DatosCompresion");
@@ -160,6 +170,14 @@ namespace Laboratorio2ED2.Controllers
         [HttpPost]
         public IActionResult Descomprimirtexto([FromForm] IFormFile files)
         {
+            Letras AuxiliarDelegados = new Letras();
+            DelegadoDescompresion Descompresion = new DelegadoDescompresion(AuxiliarDelegados.Descompresion);
+            ColaDePrioridad<Letras> ArbolHuff = new ColaDePrioridad<Letras>();
+            ColaDePrioridad<Letras> ArbolHuffAuxiliar = new ColaDePrioridad<Letras>();
+            DelegadosN InvocarNumero = new DelegadosN(AuxiliarDelegados.CompareToIndices);//llamado del delegado
+            DelegadoLetras SumaProcentrajes = new DelegadoLetras(AuxiliarDelegados.SumaDeIndices);
+            DelegadoClaseNumero Finalizacion = new DelegadoClaseNumero(AuxiliarDelegados.CompareToSalida);
+
             string uploadsFolder = null;
             string ccc = null;
             if (files != null)
@@ -203,9 +221,105 @@ namespace Laboratorio2ED2.Controllers
                     decimal numerodecima = decimal.Round(Convert.ToDecimal((CadenaText[i, 0] / totalletras)), 3);
                     CadenaText[i, 1] = Convert.ToDouble(numerodecima);
                 }
-            }
 
-            return Ok();
+                string Codificacion = "";
+                for (int i = 0; i < Aux.Length; i++)
+                {
+                    Letras Nuevo = new Letras();
+                    Nuevo.index = CadenaText[i, 1];
+                    Nuevo.Letra = Convert.ToString(Aux[i]);
+                    Nuevo.Binario = "";
+                    ArbolHuff.push(ArbolHuff.NodoCPPadre, ArbolHuff.newNode(Nuevo));
+                }
+                ArbolHuff.Heap(ArbolHuff.NodoCPPadre, InvocarNumero);
+
+                ArbolHuff.ConstruirArbol(ArbolHuff.NodoCPPadre, InvocarNumero, SumaProcentrajes, Finalizacion);
+                ArbolHuffAuxiliar = ArbolHuff;
+
+                encontrarmens(ArbolHuffAuxiliar.NodoCPPadre, CodigoBinario, ArbolHuff.NodoCPPadre);
+                string textodescodificado = a;
+
+                string uploadsNewFolder = Path.Combine(fistenviroment.ContentRootPath, "UploadHuff");
+                string[] cadenafile = files.FileName.Split('.');
+
+                string direccionNuevo = Path.Combine(uploadsNewFolder, cadenafile[0].ToString() + ".txt");
+
+                using (StreamWriter outFile = new StreamWriter(direccionNuevo))
+                    outFile.WriteLine(textodescodificado);
+                return Ok("EL ARCHIVO TXT NUEVO SE GUARDO EN LA CARPETA UPLOADHUFF DEL LABORATORIO");
+            }
+            else
+            {
+                return StatusCode(500);
+
+            }
+        }
+        public static void encontrarmens(NodoCP<Letras> aux, char[] num, NodoCP<Letras> original)
+        {
+            if (num!=null)
+            {
+                char[] Auxchar = new char[num.Length - 1];
+                char[] Auxcharletra = new char[num.Length ];
+
+                if (num[0].ToString() == "0")
+                {
+                    if (aux.Izquierda == null)
+                    {
+                        a += aux.Data.Letra;
+
+                            for (int j = 0; j < Auxcharletra.Length; j++)
+                            {
+                                Auxcharletra[j] = num[j];
+                            }
+                        
+                        encontrarmens(original, Auxcharletra, original);
+                    }
+                    else
+                    {
+                        if (num.Length == 1)
+                        {
+                            Auxchar = null;
+                        }
+                        else
+                        {
+                            for (int j = 0; j < Auxchar.Length; j++)
+                            {
+                                Auxchar[j] = num[j + 1];
+                            }
+                        }
+                        encontrarmens(aux.Izquierda, Auxchar, original);
+                    }
+                }
+                else
+                {
+                    if (aux.Derecha == null)
+                    {
+                        a += aux.Data.Letra;
+      
+                            for (int j = 0; j < Auxcharletra.Length; j++)
+                            {
+                                Auxcharletra[j] = num[j ];
+                            }
+                        
+                        encontrarmens(original, Auxcharletra, original);
+                    }
+                    else
+                    {
+                        if (num.Length == 1)
+                        {
+                            Auxchar = null;
+                        }
+                        else
+                        {
+                            for (int j = 0; j < Auxchar.Length; j++)
+                            {
+                                Auxchar[j] = num[j + 1];
+                            }
+                        }
+                        encontrarmens(aux.Derecha, Auxchar, original);
+                    }
+                }
+            }
         }
         public static string DecimalBinario(int numero)
         {
