@@ -177,7 +177,7 @@ namespace Laboratorio2ED2.Controllers
             DelegadosN InvocarNumero = new DelegadosN(AuxiliarDelegados.CompareToIndices);//llamado del delegado
             DelegadoLetras SumaProcentrajes = new DelegadoLetras(AuxiliarDelegados.SumaDeIndices);
             DelegadoClaseNumero Finalizacion = new DelegadoClaseNumero(AuxiliarDelegados.CompareToSalida);
-
+            a = null;
             string uploadsFolder = null;
             string ccc = null;
             if (files != null)
@@ -236,7 +236,7 @@ namespace Laboratorio2ED2.Controllers
                 ArbolHuff.ConstruirArbol(ArbolHuff.NodoCPPadre, InvocarNumero, SumaProcentrajes, Finalizacion);
                 ArbolHuffAuxiliar = ArbolHuff;
 
-                encontrarmens(ArbolHuffAuxiliar.NodoCPPadre, CodigoBinario, ArbolHuff.NodoCPPadre);
+                BuscarLetras(ArbolHuffAuxiliar.NodoCPPadre, CodigoBinario, ArbolHuff.NodoCPPadre);
                 string textodescodificado = a;
 
                 string uploadsNewFolder = Path.Combine(fistenviroment.ContentRootPath, "UploadHuff");
@@ -254,7 +254,7 @@ namespace Laboratorio2ED2.Controllers
 
             }
         }
-        public static void encontrarmens(NodoCP<Letras> aux, char[] num, NodoCP<Letras> original)
+        public static void BuscarLetras(NodoCP<Letras> aux, char[] num, NodoCP<Letras> original)
         {
             if (num!=null)
             {
@@ -271,8 +271,8 @@ namespace Laboratorio2ED2.Controllers
                             {
                                 Auxcharletra[j] = num[j];
                             }
-                        
-                        encontrarmens(original, Auxcharletra, original);
+
+                        BuscarLetras(original, Auxcharletra, original);
                     }
                     else
                     {
@@ -287,7 +287,7 @@ namespace Laboratorio2ED2.Controllers
                                 Auxchar[j] = num[j + 1];
                             }
                         }
-                        encontrarmens(aux.Izquierda, Auxchar, original);
+                        BuscarLetras(aux.Izquierda, Auxchar, original);
                     }
                 }
                 else
@@ -300,8 +300,8 @@ namespace Laboratorio2ED2.Controllers
                             {
                                 Auxcharletra[j] = num[j ];
                             }
-                        
-                        encontrarmens(original, Auxcharletra, original);
+
+                        BuscarLetras(original, Auxcharletra, original);
                     }
                     else
                     {
@@ -316,7 +316,7 @@ namespace Laboratorio2ED2.Controllers
                                 Auxchar[j] = num[j + 1];
                             }
                         }
-                        encontrarmens(aux.Derecha, Auxchar, original);
+                        BuscarLetras(aux.Derecha, Auxchar, original);
                     }
                 }
             }
