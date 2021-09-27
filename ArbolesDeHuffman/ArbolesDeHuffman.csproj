@@ -43,9 +43,15 @@
   <ItemGroup>
     <Compile Include="ColaDePrioridad.cs" />
     <Compile Include="Huffman.cs" />
+    <Compile Include="ILZW.cs" />
     <Compile Include="LZW.cs" />
     <Compile Include="NodoCP.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\.editorconfig">
+      <Link>.editorconfig</Link>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

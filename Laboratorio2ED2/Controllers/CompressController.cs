@@ -222,7 +222,6 @@ namespace Laboratorio2ED2.Controllers
                     CadenaText[i, 1] = Convert.ToDouble(numerodecima);
                 }
 
-                string Codificacion = "";
                 for (int i = 0; i < Aux.Length; i++)
                 {
                     Letras Nuevo = new Letras();

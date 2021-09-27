@@ -6,19 +6,11 @@ using System.Threading.Tasks;
 
 namespace ArbolesDeHuffman
 {
-    public class LZW <T> where T : IComparable
+    public class LZW <T> where T : IComparable , ILZW
     {
-        public void CrearDiccionario(string texto) 
+        public void CrearDiccionario(T texto) 
         {
-            char[] ArrayTexto = texto.ToCharArray();
-            char[] Diccionario = ArrayTexto.Distinct().ToArray();
-            int LongitudInicial = Diccionario.Length;
-            Array.Sort(Diccionario);
-
-            while (true)
-            {
-                 
-            }
+            char[] Diccionario = texto.Archivo.Distinct();
         }
 
         public bool Verificar(char[] Diccionario, string Comparar) 
