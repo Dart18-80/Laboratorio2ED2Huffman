@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ArbolesDeHuffman
 {
-    public interface ILZW
+    public interface ILZW<T>
     {
         string Archivo { get; set; }
 

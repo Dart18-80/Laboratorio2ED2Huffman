@@ -6,7 +6,7 @@ using ArbolesDeHuffman;
 
 namespace Laboratorio2ED2.Models
 {
-    public class Texto : ILZW
+    public class Texto : ILZW<Texto>, IComparable
     {
         public string Archivo { get; set ; }
 
@@ -20,6 +20,10 @@ namespace Laboratorio2ED2.Models
             else
                 return 1;
 
+            throw new NotImplementedException();
+        }
+        public int CompareTo(object obj)
+        {
             throw new NotImplementedException();
         }
     }
