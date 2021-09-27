@@ -43,6 +43,7 @@
   <ItemGroup>
     <Compile Include="ColaDePrioridad.cs" />
     <Compile Include="Huffman.cs" />
+    <Compile Include="LZW.cs" />
     <Compile Include="NodoCP.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
