@@ -7,7 +7,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Laboratorio2ED2", "Laborato
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArbolesDeHuffman", "ArbolesDeHuffman\ArbolesDeHuffman.csproj", "{64B4D7CC-C735-4016-881C-EBD37ADC7E82}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsolaHuffman", "ConsolaHuffman\ConsolaHuffman.csproj", "{E6499842-EB93-4431-BA97-0CDDF16B72BF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsolaHuffman", "ConsolaHuffman\ConsolaHuffman.csproj", "{E6499842-EB93-4431-BA97-0CDDF16B72BF}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{74C022A1-471C-4694-AB63-308348C64E99}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
