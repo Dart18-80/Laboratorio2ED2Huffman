@@ -11,6 +11,7 @@ namespace ArbolesDeHuffman
         public  string textonuevo = "";
         public  int numciclo = 0;
         public  string codificacion = "";
+        public string completo = "";
         public void CrearLZW(string texto, Delegate Comparacion) 
         {
             char[] ArrayTexto = texto.ToCharArray();//El texto completo en un array 
@@ -29,6 +30,7 @@ namespace ArbolesDeHuffman
             listaletras.Sort();
             textonuevo = ArrayTexto[0].ToString();
             CrearDiccionario(listaletras, listatexto, Comparacion);
+            completo=CodificacionDeTexto(Diccionario);
         }
         public void CrearDiccionario(List<string> lista, List<string> listatexto, Delegate Comparacion)
         {
@@ -103,28 +105,145 @@ namespace ArbolesDeHuffman
 
         public string listadonum() 
         {
-            return codificacion;
-            
+            return completo;  
         }
 
         public string CodificacionDeTexto(char[] DiccionarioInicial) 
         {
-            string TextoCodificado="";
+            string TextoCompleto="";//todo el mensaje que se va a mandar en txt
+            string TextoParaDecod = "";//caracteristicas para decodificar
             string[] cadenasplit = codificacion.Split(',');
             var max = cadenasplit.Max();
-            if (Convert.ToInt32(max)<=255)//Se encuentra dentro de un byte 11111111
+            Array.Sort(DiccionarioInicial);
+            string maximoBinario = DecimalBinario(Convert.ToInt32(max));
+            string frecuCiacodificada = "";//El codigo en binario
+            string diccionario = "";
+            for (int i = 0; i < DiccionarioInicial.Length; i++)
             {
-
+                diccionario += DiccionarioInicial[i];
             }
-            else//El numero se excede de un byte
+            for (int i = 0; i < cadenasplit.Length; i++)
             {
-
+                string binario = DecimalBinario(Convert.ToInt32(cadenasplit[i]));
+                if (binario.Length!=maximoBinario.Length)
+                {
+                    string aux = CompletarmaxBinario(binario, maximoBinario.Length);
+                    binario = aux;
+                }
+                frecuCiacodificada += binario;
             }
-            return TextoCodificado;
+            if (ParInpar(frecuCiacodificada.Length))//Entra si es impar, asi se tiene que completar el byte
+            {
+                string aux=CompletarTextoBinario(frecuCiacodificada);
+                frecuCiacodificada = aux;
+            }
+
+            TextoCompleto =CompletarBinario(DecimalBinario(maximoBinario.Length), 1)+CompletarBinario(DecimalBinario(DiccionarioInicial.Length),1) +diccionario+frecuCiacodificada;
+            return TextoCompleto;
         }
-
-        public void decimalabinario() 
+        public bool ParInpar(int num) 
         {
+            if ((num % 2) == 0)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+        public string CompletarTextoBinario(string binario) //completa el codigo completo a un numero par
+        {
+            char[] cadena = binario.ToCharArray();
+            string auxiliar = "";
+            string extra = "";
+            int delimitador = (binario.Length / 8) + 1;
+            for (int i = 0; i < delimitador; i++)
+            {
+                for (int j = 0; j < cadena.Length; j++)
+                {
+                    if (i!=(delimitador-1))
+                    {
+                        auxiliar += Convert.ToString(cadena[j]);
+                    }
+                    else
+                    {
+                        extra += Convert.ToString(cadena[j]);
+                    }
+                }
+            }
+            string total = auxiliar + CompletarBinario(extra, 0);
+            return total;
+        }
+        public string CompletarBinario(string Binincompleto, int verificar) //llena el sobrante del un byte
+        {
+            int num = Binincompleto.Length;
+            string Completo = "";
+            if (num<8)
+            {
+                int faltante = 8 - num;
+                string ceros = "";
+                for (int i = 0; i < faltante; i++)
+                {
+                    ceros += 0;
+                }
+                if (verificar==0)//los ceros van al final del codigo
+                {
+                    Completo = Binincompleto + ceros;
+                }
+                else//los ceros van antes del codigo
+                {
+                    Completo = ceros +Binincompleto ;
+                }
+                return Completo;
+            }
+            return Binincompleto;
+        }
+        public string CompletarmaxBinario(string Binincompleto, int max) //llena el sobrante del un byte
+        {
+            int num = Binincompleto.Length;
+            string Completo = "";
+            int faltante = 8 - num;
+            string ceros = "";
+
+            for (int i = 0; i < max-num; i++)
+            {
+                ceros += 0;
+            }
+            Completo = ceros + Binincompleto;
+            return Completo;
+        }
+        public static string DecimalBinario(int numero)
+        {
+            string binario = "";
+            if (numero > 0)
+            {
+                while (numero > 0)
+                {
+                    if (numero % 2 == 0)
+                    {
+                        binario = "0" + binario;
+                    }
+                    else
+                    {
+                        binario = "1" + binario;
+                    }
+                    numero = (int)(numero / 2);
+                }
+                return binario;
+            }
+            else
+            {
+                if (numero == 0)
+                {
+                    return "0";
+                }
+                else
+                {
+                    return "";
+                }
+            }
+
         }
     }
 }
