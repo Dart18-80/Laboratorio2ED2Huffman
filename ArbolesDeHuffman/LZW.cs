@@ -15,73 +15,70 @@ namespace ArbolesDeHuffman
         {
             char[] ArrayTexto = texto.ToCharArray();//El texto completo en un array 
             char[] Diccionario = ArrayTexto.Distinct().ToArray();//El primer diccionario
-            List<string> listaletras = new List<string>(Diccionario.Length);
+            List<string> listaletras = new List<string>();
+            List<string> listatexto = new List<string>();
+
             for (int i = 0; i < Diccionario.Length; i++)
             {
                 listaletras.Add(Diccionario[i].ToString());
             }
+            for (int i = 0; i < ArrayTexto.Length; i++)
+            {
+                listatexto.Add(ArrayTexto[i].ToString());
+            }
             listaletras.Sort();
             textonuevo = ArrayTexto[0].ToString();
-            CrearDiccionario(listaletras, ArrayTexto, Comparacion);
+            CrearDiccionario(listaletras, listatexto, Comparacion);
         }
-        public void CrearDiccionario(List<string> lista, char[] Array, Delegate Comparacion)
+        public void CrearDiccionario(List<string> lista, List<string> listatexto, Delegate Comparacion)
         {
-            if (Array.Length!=1)
+            if (RecorrerTexto(lista, textonuevo, Comparacion))//se tiene que agregar otro caracter
             {
-                if (RecorrerTexto(lista, textonuevo, Comparacion))//se tiene que agregar otro caracter
+                if (listatexto.Count==textonuevo.Length)
                 {
-                    if (Array[0] == Convert.ToChar("\0"))
+                    for (int i = 0; i < lista.Count; i++)
                     {
-                        for (int i = 0; i < 1; i++)
+                        if (lista[i]==textonuevo)
                         {
-                            Array = Array.Where((source, index) => index != i).ToArray();
+                            codificacion += i+1;
                         }
                     }
-                    LetrasAgregar(Array);
-                    CrearDiccionario(lista, Array, Comparacion);
                 }
                 else
                 {
-                    codificacion += NumDiccionario(lista, Comparacion);
-                    lista.Add(textonuevo);
-                    for (int i = 0; i < numciclo; i++)
-                    {
-                        Array[i] = default;
-                    }
-                    char[] aux = new char[Array.Length - numciclo];
-                    for (int i = 0; i < numciclo; i++)
-                    {
-                        Array = Array.Where((source, index) => index != i).ToArray();
-                    }
-                    textonuevo = Array[0].ToString();
-                    numciclo = 0;
-                    CrearDiccionario(lista, Array, Comparacion);
+                    LetrasAgregar(listatexto);
+                    CrearDiccionario(lista, listatexto, Comparacion);
                 }
+                
             }
             else
             {
-                for (int i = 0; i < lista.Count; i++)
+                codificacion += NumDiccionario(lista, Comparacion);
+                lista.Add(textonuevo);
+                for (int i = 0; i < textonuevo.Length - 1; i++)
                 {
-                    if (lista[i]==textonuevo)
-                    {
-                        codificacion += i + 1;
-                    }
+                    listatexto.RemoveAt(0);
                 }
+                textonuevo = listatexto[0];
+                numciclo = 0;
+                CrearDiccionario(lista, listatexto, Comparacion);
             }
         }
         public string NumDiccionario(List<string> lista, Delegate Comparacion)
         {
             string numeros = "";
+            string palabrabusc = "";
             char[] Aux = textonuevo.ToArray();
-            for (int i = 0; i < numciclo; i++)
+            for (int i = 0; i < Aux.Length-1; i++)
             {
-                for (int j = 0; j < lista.Count ; j++)
+                 palabrabusc += Aux[i].ToString();
+            }
+            for (int j = 0; j < lista.Count; j++)
+            {
+                int comp = Convert.ToInt32(Comparacion.DynamicInvoke(lista[j], palabrabusc));
+                if (comp == 0)
                 {
-                    int comp = Convert.ToInt32(Comparacion.DynamicInvoke(lista[j], Aux[i].ToString()));
-                    if (comp == 0)
-                    {
-                        numeros += (j + 1) + ",";
-                    }
+                    numeros += (j + 1) + ",";
                 }
             }
             return numeros;
@@ -99,18 +96,35 @@ namespace ArbolesDeHuffman
             }
             return false;
         }
-        public void LetrasAgregar(char[] Array)
+        public void LetrasAgregar(List<string> lista)
         {
-            if (Array.Length!=1)
-            {
-                textonuevo += Array[numciclo];
-            }
+                textonuevo += lista[numciclo];
         }
 
         public string listadonum() 
         {
             return codificacion;
             
+        }
+
+        public string CodificacionDeTexto(char[] DiccionarioInicial) 
+        {
+            string TextoCodificado="";
+            string[] cadenasplit = codificacion.Split(',');
+            var max = cadenasplit.Max();
+            if (Convert.ToInt32(max)<=255)//Se encuentra dentro de un byte 11111111
+            {
+
+            }
+            else//El numero se excede de un byte
+            {
+
+            }
+            return TextoCodificado;
+        }
+
+        public void decimalabinario() 
+        {
         }
     }
 }
