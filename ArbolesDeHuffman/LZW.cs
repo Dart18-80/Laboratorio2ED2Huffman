@@ -433,6 +433,7 @@ namespace ArbolesDeHuffman
         public string Previo ;
         public string Actual = "";
         public string Nuevo= "";
+        public int n = 0;
         public void Almacenamientodiccionario(List<string> diccionario, List<string> binarios) 
         {
             if (binarios.Count!=0)
@@ -443,18 +444,34 @@ namespace ArbolesDeHuffman
                     Actual += BuscarLetra(diccionario, val.ToString());
                     Previo = Actual;
                     texto += Actual;
+                    n++;
                     binarios.RemoveAt(0);
                     Almacenamientodiccionario(diccionario, binarios);
                 }
                 else
                 {
-                    Actual = BuscarLetra(diccionario, val.ToString());
-                    Nuevo = Previo +  Actualunico(Actual);
-                    diccionario.Add(Nuevo);
-                    texto += Actual;
-                    Previo = Actual;
-                    binarios.RemoveAt(0);
-                    Almacenamientodiccionario(diccionario, binarios);
+                    if (val>diccionario.Count)
+                    {
+                        Actual = BuscarLetra(diccionario, val.ToString());
+                        Nuevo = Previo + Actualunico(Previo);
+                        diccionario.Add(Nuevo);
+                        texto += Nuevo;
+                        Previo = Nuevo;
+                        binarios.RemoveAt(0);
+                        Almacenamientodiccionario(diccionario, binarios);
+                    }
+                    else
+                    {
+                        Actual = BuscarLetra(diccionario, val.ToString());
+                        Nuevo = Previo + Actualunico(Actual);
+                        diccionario.Add(Nuevo);
+                        texto += Actual;
+                        Previo = Actual;
+                        n++;
+                        binarios.RemoveAt(0);
+                        Almacenamientodiccionario(diccionario, binarios);
+                    }
+                   
                 }
             }
         }
