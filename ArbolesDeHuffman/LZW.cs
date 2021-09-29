@@ -2,36 +2,94 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace ArbolesDeHuffman
 {
     public class LZW <T> where T : IComparable 
     {
-        public  string textonuevo = "";
-        public  int numciclo = 0;
-        public  string codificacion = "";
+        public string textonuevo = "";
         public string completo = "";
         public void CrearLZW(string texto, Delegate Comparacion) 
         {
-            char[] ArrayTexto = texto.ToCharArray();//El texto completo en un array 
-            char[] Diccionario = ArrayTexto.Distinct().ToArray();//El primer diccionario
+            bool Verificar = texto.Contains("\r\n");
+
             List<string> listaletras = new List<string>();
             List<string> listatexto = new List<string>();
+            List<string> lisdiccio = new List<string>();
 
-            for (int i = 0; i < Diccionario.Length; i++)
+            if (Verificar)
             {
-                listaletras.Add(Diccionario[i].ToString());
+                char[] ArrayTexto = texto.ToCharArray();//El texto completo en un array 
+                char[] DiccionarioVeridifcar = ArrayTexto.Distinct().ToArray();
+
+                for (int i = 0; i < DiccionarioVeridifcar.Length-1; i++)
+                {
+                    Array.Sort(DiccionarioVeridifcar);
+
+                    if (i==0)
+                    {
+                        listaletras.Add("\r\n");
+                        lisdiccio.Add("\r\n");
+                    }
+                    else
+                    {
+                        listaletras.Add(DiccionarioVeridifcar[i+1].ToString());
+                        lisdiccio.Add(DiccionarioVeridifcar[i + 1].ToString());
+                    }
+                }
+
+                listaletras.Sort();
+
+                for (int i = 0; i < ArrayTexto.Length-2; i++)
+                {
+                    if (ArrayTexto[i].ToString()=="\r")
+                    {
+                        string ex = ArrayTexto[i].ToString() + ArrayTexto[i + 1].ToString();
+                        listatexto.Add(ex);
+                        i++;
+                    }
+                    else if (ArrayTexto[i].ToString() == "\n")
+                    {
+                    }
+                    else
+                    {
+                        listatexto.Add(ArrayTexto[i].ToString());
+                    }
+                }
+
+                textonuevo = ArrayTexto[0].ToString();
+                lisdiccio.Sort();
+
+                CrearDiccionario(listaletras, listatexto, Comparacion);
+                completo = CodificacionDeTexto(lisdiccio);
             }
-            for (int i = 0; i < ArrayTexto.Length; i++)
+            else
             {
-                listatexto.Add(ArrayTexto[i].ToString());
+                char[] ArrayTexto = texto.ToCharArray();//El texto completo en un array 
+                char[] Diccionario = ArrayTexto.Distinct().ToArray();//El primer diccionario
+
+                for (int i = 0; i < Diccionario.Length; i++)
+                {
+                    listaletras.Add(Diccionario[i].ToString());
+                    lisdiccio.Add(Diccionario[i].ToString());
+                }
+                for (int i = 0; i < ArrayTexto.Length; i++)
+                {
+                    listatexto.Add(ArrayTexto[i].ToString());
+                }
+
+                listaletras.Sort();
+                lisdiccio.Sort();
+
+                textonuevo = ArrayTexto[0].ToString();
+                CrearDiccionario(listaletras, listatexto, Comparacion);
+                completo = CodificacionDeTexto(lisdiccio) ;
             }
-            listaletras.Sort();
-            textonuevo = ArrayTexto[0].ToString();
-            CrearDiccionario(listaletras, listatexto, Comparacion);
-            completo=CodificacionDeTexto(Diccionario);
         }
+        public string codificacion = "";
+        public int numciclo = 0;
         public void CrearDiccionario(List<string> lista, List<string> listatexto, Delegate Comparacion)
         {
             if (RecorrerTexto(lista, textonuevo, Comparacion))//se tiene que agregar otro caracter
@@ -50,18 +108,46 @@ namespace ArbolesDeHuffman
                 {
                     LetrasAgregar(listatexto);
                     CrearDiccionario(lista, listatexto, Comparacion);
-                }
-                
+                } 
             }
             else
             {
                 codificacion += NumDiccionario(lista, Comparacion);
                 lista.Add(textonuevo);
-                for (int i = 0; i < textonuevo.Length - 1; i++)
+                bool Verificar = textonuevo.Contains("\r\n");
+
+                if (Verificar)
                 {
-                    listatexto.RemoveAt(0);
+                    List<string> Aux = new List<string>();
+                    char[] Auxilia = textonuevo.ToArray();
+                    for (int i = 0; i < Auxilia.Length; i++)
+                    {
+                        if (Auxilia[i].ToString() == "\r")
+                        {
+                            Aux.Add("\r\n");
+                            i++;
+                        }
+                        else
+                        {
+                            Aux.Add(Auxilia[i].ToString());
+                        }
+                    }
+                    for (int i = 0; i < Aux.Count - 1; i++)
+                    {
+                        listatexto.RemoveAt(0);
+                    }
                 }
-                textonuevo = listatexto[0];
+                else
+                {
+                    for (int i = 0; i < textonuevo.Length - 1; i++)
+                    {
+                        listatexto.RemoveAt(0);
+                    }
+                }
+                if (listatexto.Count!=0)
+                {
+                    textonuevo = listatexto[0];
+                }
                 numciclo = 0;
                 CrearDiccionario(lista, listatexto, Comparacion);
             }
@@ -70,19 +156,49 @@ namespace ArbolesDeHuffman
         {
             string numeros = "";
             string palabrabusc = "";
-            char[] Aux = textonuevo.ToArray();
-            for (int i = 0; i < Aux.Length-1; i++)
+            bool Verificar = textonuevo.Contains("\r\n");
+            int ver = textonuevo.IndexOf("\r\n");
+            List<string> Aux = new List<string>();
+            char[] Auxilia = textonuevo.ToArray();
+
+            if (Verificar)
+            {
+                for (int i = 0; i < Auxilia.Length; i++)
+                {
+                    if (Auxilia[i].ToString()=="\r")
+                    {
+                        Aux.Add("\r\n");
+                        i++;
+                    }
+                    else
+                    {
+                        Aux.Add(Auxilia[i].ToString());
+                    }
+                }
+            }
+            else
+            {
+                for (int i = 0; i < Auxilia.Length; i++)
+                {
+                    Aux.Add(Auxilia[i].ToString());
+                }
+            }
+
+            for (int i = 0; i < Aux.Count-1; i++)
             {
                  palabrabusc += Aux[i].ToString();
             }
+
             for (int j = 0; j < lista.Count; j++)
             {
                 int comp = Convert.ToInt32(Comparacion.DynamicInvoke(lista[j], palabrabusc));
+
                 if (comp == 0)
                 {
                     numeros += (j + 1) + ",";
                 }
             }
+
             return numeros;
         }
         public bool RecorrerTexto(List<string> lista, string texto, Delegate Comparacion)
@@ -90,12 +206,14 @@ namespace ArbolesDeHuffman
             for (int i = 0; i < lista.Count; i++)
             {
                 int comp = Convert.ToInt32(Comparacion.DynamicInvoke(lista[i], texto));
+
                 if (comp == 0)//se encontro en el diccionario
                 {
                     numciclo++;
                     return true;
                 }
             }
+
             return false;
         }
         public void LetrasAgregar(List<string> lista)
@@ -108,23 +226,31 @@ namespace ArbolesDeHuffman
             return completo;  
         }
 
-        public string CodificacionDeTexto(char[] DiccionarioInicial) 
+        public string CodificacionDeTexto(List<string> lista) 
         {
             string TextoCompleto="";//todo el mensaje que se va a mandar en txt
             string TextoParaDecod = "";//caracteristicas para decodificar
             string[] cadenasplit = codificacion.Split(',');
-            var max = cadenasplit.Max();
-            Array.Sort(DiccionarioInicial);
+            int[] auxi = new int[cadenasplit.Length];
+
+            for (int i = 0; i < cadenasplit.Length; i++)
+            {
+                auxi[i] = Convert.ToInt32(cadenasplit[i]);
+            }
+            var max = auxi.Max() ;
+
             string maximoBinario = DecimalBinario(Convert.ToInt32(max));
             string frecuCiacodificada = "";//El codigo en binario
             string diccionario = "";
-            for (int i = 0; i < DiccionarioInicial.Length; i++)
+
+            for (int i = 0; i < lista.Count; i++)
             {
-                diccionario += DiccionarioInicial[i];
+                diccionario += lista[i];
             }
             for (int i = 0; i < cadenasplit.Length; i++)
             {
                 string binario = DecimalBinario(Convert.ToInt32(cadenasplit[i]));
+
                 if (binario.Length!=maximoBinario.Length)
                 {
                     string aux = CompletarmaxBinario(binario, maximoBinario.Length);
@@ -132,13 +258,16 @@ namespace ArbolesDeHuffman
                 }
                 frecuCiacodificada += binario;
             }
-            if (ParInpar(frecuCiacodificada.Length))//Entra si es impar, asi se tiene que completar el byte
+            int delimitador = (frecuCiacodificada.Length / 8) + 1;
+            int totalbits = delimitador * 8;
+
+            if (delimitador!=totalbits)//Entra si es impar, asi se tiene que completar el byte
             {
                 string aux=CompletarTextoBinario(frecuCiacodificada);
                 frecuCiacodificada = aux;
             }
 
-            TextoCompleto =CompletarBinario(DecimalBinario(maximoBinario.Length), 1)+CompletarBinario(DecimalBinario(DiccionarioInicial.Length),1) +diccionario+frecuCiacodificada;
+            TextoCompleto =CompletarBinario(DecimalBinario(maximoBinario.Length), 1)+CompletarBinario(DecimalBinario(lista.Count),1) +diccionario+frecuCiacodificada;
             return TextoCompleto;
         }
         public bool ParInpar(int num) 
@@ -155,24 +284,18 @@ namespace ArbolesDeHuffman
         public string CompletarTextoBinario(string binario) //completa el codigo completo a un numero par
         {
             char[] cadena = binario.ToCharArray();
+
             string auxiliar = "";
             string extra = "";
+
             int delimitador = (binario.Length / 8) + 1;
-            for (int i = 0; i < delimitador; i++)
+            int totalbits = delimitador * 8;
+            string total = binario;
+
+            for (int i = 0; i < totalbits-binario.Length; i++)
             {
-                for (int j = 0; j < cadena.Length; j++)
-                {
-                    if (i!=(delimitador-1))
-                    {
-                        auxiliar += Convert.ToString(cadena[j]);
-                    }
-                    else
-                    {
-                        extra += Convert.ToString(cadena[j]);
-                    }
-                }
+                total += 0;
             }
-            string total = auxiliar + CompletarBinario(extra, 0);
             return total;
         }
         public string CompletarBinario(string Binincompleto, int verificar) //llena el sobrante del un byte
@@ -213,6 +336,175 @@ namespace ArbolesDeHuffman
             Completo = ceros + Binincompleto;
             return Completo;
         }
+        public string texto = "";
+
+        public void Descomprimirlzw(string ccc)
+        {
+            char[] Arraycompleto = ccc.ToCharArray();
+            string PrimerByte = default;
+            string SegundoByte = default;
+
+
+            for (int i = 0; i < 8; i++)
+            {
+                PrimerByte += Arraycompleto[i].ToString();
+                SegundoByte += Arraycompleto[8 + i].ToString();
+            }
+
+            int CantDiccionario = binariodecimal(SegundoByte);
+            int CantBits = binariodecimal(PrimerByte);
+
+            List<string> diccionario = new List<string>();
+            List<string> paravefiricar = new List<string>();
+            for (int i = 0; i < Arraycompleto.Length-2; i++)
+            {
+                paravefiricar.Add(Arraycompleto[i].ToString());
+            }
+            bool Verificar = paravefiricar.Contains("\r\n");
+
+            if (Verificar)
+            {
+                int posicionespacio = ccc.IndexOf("\r\n") ;
+                for (int i = 0; i <= CantDiccionario; i++)
+                {
+                    if ((16+i)==posicionespacio)
+                    {
+                        string enter = (Arraycompleto[16 + i].ToString() + Arraycompleto[16 + i+1].ToString());
+                        diccionario.Add(enter);
+                        i++;
+                    }
+                    else
+                    {
+                        diccionario.Add(Arraycompleto[16 + i].ToString());
+
+                    }
+                }
+            }
+            else
+            {
+                for (int i = 0; i < CantDiccionario; i++)
+                {
+                    diccionario.Add(Arraycompleto[16 + i].ToString());
+                }
+            }
+
+            int Sobrante = Arraycompleto.Length-(16 + CantDiccionario);
+            string CodigoBinario = default;
+
+            bool Versalto = paravefiricar.Contains("\r\n");
+
+            if (Versalto)
+            {
+                for (int i = 0; i < Sobrante-3; i++)
+                {
+                    CodigoBinario += Arraycompleto[(16 + CantDiccionario) + i+1];
+                }
+            }
+            else
+            {
+                for (int i = 0; i < Sobrante; i++)
+                {
+                    CodigoBinario += Arraycompleto[(16 + CantDiccionario) + i];
+                }
+            }
+           
+            CodigoBinario = Regex.Replace(CodigoBinario, "\r\n", string.Empty);
+
+            List<string> BinarioFragmentado = new List<string>();
+            char[] aux = CodigoBinario.ToCharArray();
+
+            string bitnumero = "";
+            int cont = 1;
+
+            for (int j = 0; j < aux.Length; j++)
+            {
+                bitnumero += aux[j].ToString();
+                if (cont > (CantBits - 1))
+                {
+                    BinarioFragmentado.Add(bitnumero);
+                    bitnumero = "";
+                    cont = 0;
+                }
+                cont++;
+            }
+
+            Almacenamientodiccionario(diccionario, BinarioFragmentado);
+        }
+        public string Previo ;
+        public string Actual = "";
+        public string Nuevo= "";
+        public void Almacenamientodiccionario(List<string> diccionario, List<string> binarios) 
+        {
+            if (binarios.Count!=0)
+            {
+                int val = binariodecimal(binarios[0].ToString());
+                if (Previo==null)
+                {
+                    Actual += BuscarLetra(diccionario, val.ToString());
+                    Previo = Actual;
+                    texto += Actual;
+                    binarios.RemoveAt(0);
+                    Almacenamientodiccionario(diccionario, binarios);
+                }
+                else
+                {
+                    Actual = BuscarLetra(diccionario, val.ToString());
+                    Nuevo = Previo +  Actualunico(Actual);
+                    diccionario.Add(Nuevo);
+                    texto += Actual;
+                    Previo = Actual;
+                    binarios.RemoveAt(0);
+                    Almacenamientodiccionario(diccionario, binarios);
+                }
+            }
+        }
+        public string Actualunico(string actual) 
+        {
+            char[] ac = actual.ToCharArray();
+            int num = ac.Length;
+            string a = "";
+            if (num!=1)
+            {
+                for (int i = 0; i < num-1; i++)
+                {
+                    a+= ac[i];
+                }
+                return a;
+            }
+            else
+            {
+                return actual;
+            }
+
+        }
+        public string BuscarLetra(List<string> diccionario, string num) 
+        {
+            string val = "";
+            for (int i = 0; i < diccionario.Count; i++)
+            {
+                if ((Convert.ToInt32(num)-1) == i)
+                {
+                    val += diccionario[i];
+                }
+            }
+            return val;
+        }
+        public static int binariodecimal(string bin)
+        {
+            int sum = 0;
+            char[] numero = bin.ToCharArray();
+            Array.Reverse(numero);
+            for (int i = 0; i < numero.Length; i++)
+            {
+                if (numero[i].ToString() == "1")
+                {
+                    sum += (int)Math.Pow(2, i);
+
+                }
+            }
+            return sum;
+        }
+
         public static string DecimalBinario(int numero)
         {
             string binario = "";

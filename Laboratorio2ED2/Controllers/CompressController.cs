@@ -26,6 +26,7 @@ namespace Laboratorio2ED2.Controllers
         }
         //Se nombran los delegados que se utilizaran en la compresion
         delegate int DelegadosN(Letras Numero1, Letras Numero2);
+        delegate int DelegadosLZW(string Numero1, string Numero2);
         delegate int DelegadoClaseNumero(Letras Numero1);
         delegate Letras DelegadoLetras(Letras Aux1, Letras Aux2);
         delegate Letras DelegadoBinario(Letras Asignacion, string Codigo);
@@ -127,7 +128,7 @@ namespace Laboratorio2ED2.Controllers
             }
 
 
-            //se crea un archivo donde se guaardaran los datos de tos
+            //se crea un archivo donde se guaardaran los datos de todos
             string uploadcompresion = Path.Combine(fistenviroment.ContentRootPath, "DatosCompresion");
             string filepathcompresion = Path.Combine(uploadcompresion, "DatosDeLasCompresiones.txt");
             if (System.IO.File.Exists(filepathcompresion))
@@ -166,7 +167,7 @@ namespace Laboratorio2ED2.Controllers
             return Singleton.Intance.DatosCompresiones;
         }
 
-        [Route("api/decompress")]
+        [Route("api/descompress")]
         [HttpPost]
         public IActionResult Descomprimirtexto([FromForm] IFormFile files)
         {
@@ -245,6 +246,79 @@ namespace Laboratorio2ED2.Controllers
 
                 using (StreamWriter outFile = new StreamWriter(direccionNuevo))
                     outFile.WriteLine(textodescodificado);
+                return Ok("EL ARCHIVO TXT NUEVO SE GUARDO EN LA CARPETA UPLOADHUFF DEL LABORATORIO");
+            }
+            else
+            {
+                return StatusCode(500);
+
+            }
+        }
+
+
+
+        [Route("api/compress/LZW/{Name}")]
+        [HttpPost]
+        public IActionResult PostLZW([FromForm] IFormFile files, string name) 
+        {
+            LZW<Texto> CompresionLZW = new LZW<Texto>();
+            Texto AuxiliarDelegados = new Texto();
+            DelegadosLZW InvocarLetra = new DelegadosLZW(AuxiliarDelegados.CompareToLetras);
+            string uploadsFolder = null;
+            string ccc = null;
+            if (files != null)
+            {
+                uploadsFolder = Path.Combine(fistenviroment.ContentRootPath, "Upload");
+                string filepath = Path.Combine(uploadsFolder, files.FileName);
+                if (!System.IO.File.Exists(filepath))
+                {
+                    using (var INeadLearn = new FileStream(filepath, FileMode.CreateNew))
+                    {
+                        files.CopyTo(INeadLearn);
+                    }
+                }
+                ccc = System.IO.File.ReadAllText(filepath);// es el texto del archivo de texto
+            }
+            CompresionLZW.CrearLZW(ccc, InvocarLetra);
+            string codificacionlzw = CompresionLZW.listadonum();
+
+            string uploadsNewFolder = Path.Combine(fistenviroment.ContentRootPath, "UploadHuff");
+
+            string direccionNuevo = Path.Combine(uploadsNewFolder, name + ".huff");
+
+            using (StreamWriter outFile = new StreamWriter(direccionNuevo))
+                outFile.WriteLine(codificacionlzw);
+
+            return Ok();
+        }
+
+        [Route("api/descompress/LZW")]
+        [HttpPost]
+        public IActionResult DescomprimirtextoLZW([FromForm] IFormFile files) 
+        {
+            LZW<Texto> CompresionLZW = new LZW<Texto>();
+            string uploadsFolder = null;
+            string ccc = null;
+            if (files != null)
+            {
+                uploadsFolder = Path.Combine(fistenviroment.ContentRootPath, "Upload");
+                string filepath = Path.Combine(uploadsFolder, files.FileName);
+                if (!System.IO.File.Exists(filepath))
+                {
+                    using (var INeadLearn = new FileStream(filepath, FileMode.CreateNew))
+                    {
+                        files.CopyTo(INeadLearn);
+                    }
+                }
+                ccc = System.IO.File.ReadAllText(filepath);// es el texto del archivo de texto
+                CompresionLZW.Descomprimirlzw(ccc);
+                string uploadsNewFolder = Path.Combine(fistenviroment.ContentRootPath, "UploadHuff");
+                string[] cadenafile = files.FileName.Split('.');
+
+                string direccionNuevo = Path.Combine(uploadsNewFolder, cadenafile[0].ToString() + ".txt");
+
+                using (StreamWriter outFile = new StreamWriter(direccionNuevo))
+                    outFile.WriteLine(CompresionLZW.texto);
                 return Ok("EL ARCHIVO TXT NUEVO SE GUARDO EN LA CARPETA UPLOADHUFF DEL LABORATORIO");
             }
             else

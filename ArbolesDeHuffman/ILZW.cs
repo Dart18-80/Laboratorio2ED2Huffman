@@ -11,5 +11,6 @@ namespace ArbolesDeHuffman
         string Archivo { get; set; }
 
         int CompareToLetras(string Letra1, string Letra2);
+      
     }
 }

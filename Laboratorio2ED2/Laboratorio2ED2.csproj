@@ -11,8 +11,6 @@
 
   <ItemGroup>
     <Folder Include="DatosCompresion\" />
-    <Folder Include="Upload\" />
-    <Folder Include="UploadHuff\" />
   </ItemGroup>
 
 
