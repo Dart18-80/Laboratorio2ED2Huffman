@@ -355,12 +355,12 @@ namespace ArbolesDeHuffman
             int CantBits = binariodecimal(PrimerByte);
 
             List<string> diccionario = new List<string>();
-            List<string> paravefiricar = new List<string>();
+            string paraverificara = "";
             for (int i = 0; i < Arraycompleto.Length-2; i++)
             {
-                paravefiricar.Add(Arraycompleto[i].ToString());
+                paraverificara += Arraycompleto[i].ToString();
             }
-            bool Verificar = paravefiricar.Contains("\r\n");
+            bool Verificar = paraverificara.Contains("\r\n");
 
             if (Verificar)
             {
@@ -391,7 +391,7 @@ namespace ArbolesDeHuffman
             int Sobrante = Arraycompleto.Length-(16 + CantDiccionario);
             string CodigoBinario = default;
 
-            bool Versalto = paravefiricar.Contains("\r\n");
+            bool Versalto = diccionario.Contains("\r\n");
 
             if (Versalto)
             {
