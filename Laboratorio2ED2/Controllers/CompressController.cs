@@ -255,8 +255,6 @@ namespace Laboratorio2ED2.Controllers
             }
         }
 
-
-
         [Route("api/compress/LZW/{Name}")]
         [HttpPost]
         public IActionResult PostLZW([FromForm] IFormFile files, string name) 
@@ -289,7 +287,54 @@ namespace Laboratorio2ED2.Controllers
             using (StreamWriter outFile = new StreamWriter(direccionNuevo))
                 outFile.WriteLine(codificacionlzw);
 
+            double razonOriginal = (ccc.Length / 8);
+            double razonComprimida = (codificacionlzw.Length) / 8;
+            decimal Razcompresion = 0;
+            decimal Factcompresion = 0;
+            decimal PorcentajeDism = 0;
+            if (razonComprimida != 0 && razonOriginal != 0)
+            {
+                Razcompresion = decimal.Round((Convert.ToDecimal(razonOriginal) / Convert.ToDecimal(razonComprimida)), 3);
+                Factcompresion = decimal.Round((Convert.ToDecimal(razonComprimida) / Convert.ToDecimal(razonOriginal)), 3);
+                PorcentajeDism = decimal.Round((Convert.ToDecimal(razonComprimida) / Convert.ToDecimal(razonOriginal) * 100), 2);
+            }
+            string uploadcompresion = Path.Combine(fistenviroment.ContentRootPath, "DatosCompresion");
+            string filepathcompresion = Path.Combine(uploadcompresion, "DatosDeLasCompresionesLZW.txt");
+            if (System.IO.File.Exists(filepathcompresion))
+            {
+                System.IO.File.AppendAllText(filepathcompresion, files.FileName + "," + (name + ".lzw") + "," + direccionNuevo.ToString() + "," + Razcompresion.ToString() + "," + Factcompresion.ToString() + "," + PorcentajeDism.ToString() + "@");
+            }
             return Ok();
+        }
+
+        [Route("api/compressions/LZW")]
+        [HttpGet]
+        public IEnumerable<CompresionesT> GetDatosCompresionLZW() 
+        {
+            string uploadcompresion = Path.Combine(fistenviroment.ContentRootPath, "DatosCompresion");
+            string filepathcompresion = Path.Combine(uploadcompresion, "DatosDeLasCompresionesLZW.txt");
+            if (System.IO.File.Exists(filepathcompresion))
+            {
+                string ccc = System.IO.File.ReadAllText(filepathcompresion);// es el texto del archivo de texto
+                string[] cadenasplit = ccc.Split('@');
+                for (int i = 0; i < cadenasplit.Length - 1; i++)
+                {
+                    string[] cadenaAuxiliar = cadenasplit[i].Split(',');
+
+                    var Nuevo = new CompresionesT
+                    {
+                        NombreArchivoOriginal = cadenaAuxiliar[0],
+                        NombreNuevoArchivo = cadenaAuxiliar[1],
+                        RutaArchivoCompremido = cadenaAuxiliar[2],
+                        Razondecompresion = Convert.ToDouble(cadenaAuxiliar[3]),
+                        FactordeCompresion = Convert.ToDouble(cadenaAuxiliar[4]),
+                        PorcentajedeRecduccion = Convert.ToDouble(cadenaAuxiliar[5])
+                    };
+                    Singleton.Intance.DatosCompresionesLZW.Add(Nuevo);
+                }
+            }
+            return Singleton.Intance.DatosCompresiones;
+
         }
 
         [Route("api/descompress/LZW")]

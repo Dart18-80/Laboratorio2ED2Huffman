@@ -9,9 +9,5 @@
     <ProjectReference Include="..\ArbolesDeHuffman\ArbolesDeHuffman.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="DatosCompresion\" />
-  </ItemGroup>
-
 
 </Project>

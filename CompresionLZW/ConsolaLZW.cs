@@ -15,7 +15,7 @@ namespace CompresionLZW
             LZW<Texto> CompresionLZW = new LZW<Texto>();
             Texto AuxiliarDelegados = new Texto();
             DelegadosN InvocarNumero = new DelegadosN(AuxiliarDelegados.CompareToLetras);//llamado del delegado
-            Console.WriteLine("Compresion de LZW");
+            Console.WriteLine("Consola para observar la compresion de LZW");
 
             Console.WriteLine("Ingrese el texto que desea comprimir:");
             string text = Convert.ToString(Console.ReadLine());
