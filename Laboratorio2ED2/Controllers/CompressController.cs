@@ -282,7 +282,7 @@ namespace Laboratorio2ED2.Controllers
 
             string uploadsNewFolder = Path.Combine(fistenviroment.ContentRootPath, "UploadHuff");
 
-            string direccionNuevo = Path.Combine(uploadsNewFolder, name + ".huff");
+            string direccionNuevo = Path.Combine(uploadsNewFolder, name + ".lzw");
 
             using (StreamWriter outFile = new StreamWriter(direccionNuevo))
                 outFile.WriteLine(codificacionlzw);
@@ -333,7 +333,7 @@ namespace Laboratorio2ED2.Controllers
                     Singleton.Intance.DatosCompresionesLZW.Add(Nuevo);
                 }
             }
-            return Singleton.Intance.DatosCompresiones;
+            return Singleton.Intance.DatosCompresionesLZW;
 
         }
 
