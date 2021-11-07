@@ -255,123 +255,161 @@ namespace Laboratorio2ED2.Controllers
             }
         }
 
-        [Route("api/compress/LZW/{Name}")]
+        [Route("api/compress/lzw/{Name}")]
         [HttpPost]
-        public IActionResult PostLZW([FromForm] IFormFile files, string name) 
+        public IActionResult ComprimirLZW([FromRoute] string name, [FromForm] IFormFile file)
         {
-            LZW<Texto> CompresionLZW = new LZW<Texto>();
-            Texto AuxiliarDelegados = new Texto();
-            DelegadosLZW InvocarLetra = new DelegadosLZW(AuxiliarDelegados.CompareToLetras);
-            string uploadsFolder = null;
-            string ccc = null;
-            if (files != null)
+            using var fileRead = file.OpenReadStream();
+            try
             {
-                uploadsFolder = Path.Combine(fistenviroment.ContentRootPath, "Upload");
-                string filepath = Path.Combine(uploadsFolder, files.FileName);
-                if (!System.IO.File.Exists(filepath))
+                LZW testing = new LZW();
+                using var reader = new BinaryReader(fileRead);
+                var buffer = new byte[2000];
+                int existe = 0;
+                string encodificador = "";
+                List<int> Intermedio = new List<int>();
+                while (fileRead.Position < fileRead.Length)
                 {
-                    using (var INeadLearn = new FileStream(filepath, FileMode.CreateNew))
+                    buffer = reader.ReadBytes(2000);
+                    foreach (var value in buffer)
                     {
-                        files.CopyTo(INeadLearn);
+                        string trabajo = encodificador + (char)value;
+                        existe = testing.Encode(trabajo, encodificador);
+                        if (existe != -1)
+                        {
+                            Intermedio.Add(existe);
+                            encodificador = "" + (char)value;
+                        }
+                        else
+                        {
+                            encodificador = trabajo;
+                        }
                     }
                 }
-                ccc = System.IO.File.ReadAllText(filepath);// es el texto del archivo de texto
+                //INTERMEDIO A BYTES
+                List<byte> Aescribir = new List<byte>();
+
+                foreach (int item in Intermedio)
+                {
+                    Aescribir.AddRange(BitConverter.GetBytes(item));
+                }
+
+                //ESCRIBIR COMPRIMIDO
+
+                using var fileWrite = new FileStream(name + ".lzw", FileMode.OpenOrCreate);
+                var writer = new BinaryWriter(fileWrite);
+
+                writer.Write(Aescribir.ToArray());
+
+                PorpiedadesCompresion obtener = new PorpiedadesCompresion();
+                obtener.Razóndecompresión = (Convert.ToDouble(fileWrite.Length) / Convert.ToDouble(fileRead.Length));
+                obtener.Factordecompresión = (Convert.ToDouble(fileRead.Length) / Convert.ToDouble(fileWrite.Length));
+                obtener.Porcentajedereducción = (Convert.ToDouble(fileWrite.Length) / Convert.ToDouble(fileRead.Length)) * 100;
+                obtener.Nombredelarchivooriginal = (file.FileName);
+                obtener.Nombreyrutadelarchivocomprimido = (name + ".lzw");
+                Singleton.Intance.DatosCompresionesLZW.Add(obtener);
+                writer.Close();
+                fileWrite.Close();
+                reader.Close();
+                fileRead.Close();
+
+                var files = System.IO.File.OpenRead(name + ".lzw");
+                return new FileStreamResult(files, "application/lzw")
+                {
+                    FileDownloadName = name + ".lzw"
+                };
             }
-            CompresionLZW.CrearLZW(ccc, InvocarLetra);
-            string codificacionlzw = CompresionLZW.listadonum();
-
-            string uploadsNewFolder = Path.Combine(fistenviroment.ContentRootPath, "UploadHuff");
-
-            string direccionNuevo = Path.Combine(uploadsNewFolder, name + ".lzw");
-
-            using (StreamWriter outFile = new StreamWriter(direccionNuevo))
-                outFile.WriteLine(codificacionlzw);
-
-            double razonOriginal = (ccc.Length / 8);
-            double razonComprimida = (codificacionlzw.Length) / 8;
-            decimal Razcompresion = 0;
-            decimal Factcompresion = 0;
-            decimal PorcentajeDism = 0;
-            if (razonComprimida != 0 && razonOriginal != 0)
+            catch (Exception ex)
             {
-                Razcompresion = decimal.Round((Convert.ToDecimal(razonOriginal) / Convert.ToDecimal(razonComprimida)), 3);
-                Factcompresion = decimal.Round((Convert.ToDecimal(razonComprimida) / Convert.ToDecimal(razonOriginal)), 3);
-                PorcentajeDism = decimal.Round((Convert.ToDecimal(razonComprimida) / Convert.ToDecimal(razonOriginal) * 100), 2);
+                return BadRequest(ex.Message);
             }
-            string uploadcompresion = Path.Combine(fistenviroment.ContentRootPath, "DatosCompresion");
-            string filepathcompresion = Path.Combine(uploadcompresion, "DatosDeLasCompresionesLZW.txt");
-            if (System.IO.File.Exists(filepathcompresion))
-            {
-                System.IO.File.AppendAllText(filepathcompresion, files.FileName + "," + (name + ".lzw") + "," + direccionNuevo.ToString() + "," + Razcompresion.ToString() + "," + Factcompresion.ToString() + "," + PorcentajeDism.ToString() + "@");
-            }
-            return Ok();
         }
 
-        [Route("api/compressions/LZW")]
+        [Route("api/compressions/lzw")]
         [HttpGet]
-        public IEnumerable<CompresionesT> GetDatosCompresionLZW() 
+        public ActionResult Compressionslzw()
         {
-            string uploadcompresion = Path.Combine(fistenviroment.ContentRootPath, "DatosCompresion");
-            string filepathcompresion = Path.Combine(uploadcompresion, "DatosDeLasCompresionesLZW.txt");
-            if (System.IO.File.Exists(filepathcompresion))
+            try
             {
-                string ccc = System.IO.File.ReadAllText(filepathcompresion);// es el texto del archivo de texto
-                string[] cadenasplit = ccc.Split('@');
-                for (int i = 0; i < cadenasplit.Length - 1; i++)
-                {
-                    string[] cadenaAuxiliar = cadenasplit[i].Split(',');
-
-                    var Nuevo = new CompresionesT
-                    {
-                        NombreArchivoOriginal = cadenaAuxiliar[0],
-                        NombreNuevoArchivo = cadenaAuxiliar[1],
-                        RutaArchivoCompremido = cadenaAuxiliar[2],
-                        Razondecompresion = Convert.ToDouble(cadenaAuxiliar[3]),
-                        FactordeCompresion = Convert.ToDouble(cadenaAuxiliar[4]),
-                        PorcentajedeRecduccion = Convert.ToDouble(cadenaAuxiliar[5])
-                    };
-                    Singleton.Intance.DatosCompresionesLZW.Add(Nuevo);
-                }
+                var result = Singleton.Intance.DatosCompresionesLZW.Select(x => new PorpiedadesCompresion { Nombredelarchivooriginal = x.Nombredelarchivooriginal, Nombreyrutadelarchivocomprimido = x.Nombreyrutadelarchivocomprimido, Razóndecompresión = x.Razóndecompresión, Factordecompresión = x.Factordecompresión, Porcentajedereducción = x.Porcentajedereducción });
+                if (result == null) return NotFound();
+                return Ok(result);
             }
-            return Singleton.Intance.DatosCompresionesLZW;
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
 
         }
 
-        [Route("api/descompress/LZW")]
+        [Route("api/decompress/lzw")]
         [HttpPost]
-        public IActionResult DescomprimirtextoLZW([FromForm] IFormFile files) 
+        public IActionResult Decompresion([FromForm] IFormFile file)
         {
-            LZW<Texto> CompresionLZW = new LZW<Texto>();
-            string uploadsFolder = null;
-            string ccc = null;
-            if (files != null)
+            try
             {
-                uploadsFolder = Path.Combine(fistenviroment.ContentRootPath, "Upload");
-                string filepath = Path.Combine(uploadsFolder, files.FileName);
-                if (!System.IO.File.Exists(filepath))
+                LZW acceder = new LZW();
+                string input = file.FileName;
+                List<byte> decoding = new List<byte>();
+                using var fileRead2 = new FileStream(input, FileMode.OpenOrCreate);
+                using var reader2 = new BinaryReader(fileRead2);
+                var buffer = new byte[4];
+                bool first = true;
+                String total = null;
+                string output = "";
+                int i = 0;
+
+                foreach (PorpiedadesCompresion item in Singleton.Intance.DatosCompresionesLZW)
                 {
-                    using (var INeadLearn = new FileStream(filepath, FileMode.CreateNew))
+                    if (item.Nombreyrutadelarchivocomprimido == input)
                     {
-                        files.CopyTo(INeadLearn);
+                        output = item.Nombredelarchivooriginal;
+                        break;
                     }
+                    i++;
                 }
-                ccc = System.IO.File.ReadAllText(filepath);// es el texto del archivo de texto
-                CompresionLZW.Descomprimirlzw(ccc);
-                string uploadsNewFolder = Path.Combine(fistenviroment.ContentRootPath, "UploadHuff");
-                string[] cadenafile = files.FileName.Split('.');
 
-                string direccionNuevo = Path.Combine(uploadsNewFolder, cadenafile[0].ToString() + ".txt");
+                var archivo = new FileStream(output, FileMode.OpenOrCreate);
+                var escritor = new BinaryWriter(archivo);
 
-                using (StreamWriter outFile = new StreamWriter(direccionNuevo))
-                    outFile.WriteLine(CompresionLZW.texto);
-                return Ok("EL ARCHIVO TXT NUEVO SE GUARDO EN LA CARPETA UPLOADHUFF DEL LABORATORIO");
+                while (fileRead2.Position < fileRead2.Length)
+                {
+                    buffer = reader2.ReadBytes(4);
+                    byte[] plzwork = new byte[] { buffer[0], buffer[1], buffer[2], buffer[3] };
+                    if (first)
+                    {
+                        total = acceder.Firstdeco(BitConverter.ToInt32(plzwork));
+                        first = false;
+                    }
+                    else
+                    {
+                        total = acceder.Decode(BitConverter.ToInt32(plzwork));
+                    }
+                    foreach (var item in total)
+                    {
+                        escritor.Write((byte)item);
+                    }
+
+                }
+
+                //DECODIFICAR
+
+
+                reader2.Close();
+                fileRead2.Close(); ;
+                escritor.Close();
+                archivo.Close();
+                var files = System.IO.File.OpenRead(output);
+                return new FileStreamResult(files, "application/txt")
+                {
+                    FileDownloadName = output
+                };
             }
-            else
+            catch (Exception ex)
             {
-                return StatusCode(500);
-
+                return BadRequest(ex.Message);
             }
-        }
+        }   
         public static void BuscarLetras(NodoCP<Letras> aux, char[] num, NodoCP<Letras> original)
         {
             if (num!=null)

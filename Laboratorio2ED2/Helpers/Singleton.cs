@@ -19,7 +19,7 @@ namespace Laboratorio2ED2.Helpers
         }
 
         public List<CompresionesT> DatosCompresiones = new List<CompresionesT>();
-        public List<CompresionesT> DatosCompresionesLZW = new List<CompresionesT>();
+        public List<PorpiedadesCompresion> DatosCompresionesLZW = new List<PorpiedadesCompresion>();
 
 
     }
