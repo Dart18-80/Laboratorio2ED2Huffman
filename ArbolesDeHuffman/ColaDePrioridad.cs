@@ -141,28 +141,41 @@ namespace ArbolesDeHuffman
 
         public void Heap(NodoCP<T> Padre, Delegate Menor)
         {
-            if (isEmpty(Padre) == 0)
+            NodoCP<T> Nuevo = Padre;
+            bool verificar = true;
+            while (verificar)
             {
-                if (isEmpty(Padre.Siguiente) == 0)
+                if ((isEmpty(Nuevo) == 0))
                 {
-                    int Comparacion = Convert.ToInt32(Menor.DynamicInvoke(Padre.Data, Padre.Siguiente.Data));
-                    if (Comparacion > 0)
+                    if (isEmpty(Nuevo.Siguiente) == 0)
                     {
-                        T Aux = Padre.Data;
-                        NodoCP<T> DerechaPequeño = Padre.Derecha;
-                        NodoCP<T> IzquierdoPequeño = Padre.Izquierda;
-                        Padre.Data = Padre.Siguiente.Data;
-                        Padre.Derecha = Padre.Siguiente.Derecha;
-                        Padre.Izquierda = Padre.Siguiente.Izquierda;
-                        Padre.Siguiente.Data = Aux;
-                        Padre.Siguiente.Derecha = DerechaPequeño;
-                        Padre.Siguiente.Izquierda = IzquierdoPequeño;
-                        Heap(NodoCPPadre, Menor);
+                        int Comparacion = Convert.ToInt32(Menor.DynamicInvoke(Padre.Data, Padre.Siguiente.Data));
+                        if (Comparacion > 0)
+                        {
+                            T Aux = Padre.Data;
+                            NodoCP<T> DerechaPequeño = Padre.Derecha;
+                            NodoCP<T> IzquierdoPequeño = Padre.Izquierda;
+                            Padre.Data = Padre.Siguiente.Data;
+                            Padre.Derecha = Padre.Siguiente.Derecha;
+                            Padre.Izquierda = Padre.Siguiente.Izquierda;
+                            Padre.Siguiente.Data = Aux;
+                            Padre.Siguiente.Derecha = DerechaPequeño;
+                            Padre.Siguiente.Izquierda = IzquierdoPequeño;
+                            Nuevo = NodoCPPadre;
+                        }
+                        else
+                        {
+                            Nuevo = Nuevo.Siguiente;
+                        }
                     }
                     else
                     {
-                        Heap(Padre.Siguiente, Menor);
+                        verificar = false;
                     }
+                }
+                else
+                {
+                    verificar = false;
                 }
             }
         }

@@ -37,7 +37,7 @@ namespace Laboratorio2ED2.Controllers
 
         [Route("api/compress/{Name}")]
         [HttpPost]
-        public IActionResult Post([FromForm] IFormFile files, string name) //para poder llamarlo se necesita poner el noombre files en la key
+        public IActionResult Post([FromForm] IFormFile file, string name) //para poder llamarlo se necesita poner el noombre files en la key
         {
             ColaDePrioridad<Letras> ArbolHuff = new ColaDePrioridad<Letras>();
             Letras AuxiliarDelegados = new Letras();
@@ -49,15 +49,15 @@ namespace Laboratorio2ED2.Controllers
 
             string uploadsFolder = null;
             string ccc = null;
-            if (files != null)
+            if (file != null)
             {
                 uploadsFolder = Path.Combine(fistenviroment.ContentRootPath, "Upload");
-                string filepath = Path.Combine(uploadsFolder, files.FileName);
+                string filepath = Path.Combine(uploadsFolder, file.FileName);
                 if (!System.IO.File.Exists(filepath))
                 {
                     using (var INeadLearn = new FileStream(filepath, FileMode.CreateNew))
                     {
-                        files.CopyTo(INeadLearn);
+                        file.CopyTo(INeadLearn);
                     }
                 }
                 ccc = System.IO.File.ReadAllText(filepath);// es el texto del archivo de texto
@@ -133,7 +133,7 @@ namespace Laboratorio2ED2.Controllers
             string filepathcompresion = Path.Combine(uploadcompresion, "DatosDeLasCompresiones.txt");
             if (System.IO.File.Exists(filepathcompresion))
             {
-                System.IO.File.AppendAllText(filepathcompresion, files.FileName + "," + (name + ".huff") + "," + direccionNuevo.ToString() + "," + Razcompresion.ToString() + "," + Factcompresion.ToString() + "," + PorcentajeDism.ToString()+"@");
+                System.IO.File.AppendAllText(filepathcompresion, file.FileName + "," + (name + ".huff") + "," + direccionNuevo.ToString() + "," + Razcompresion.ToString() + "," + Factcompresion.ToString() + "," + PorcentajeDism.ToString()+"@");
             }
 
             return Ok("El archivo Huff esta guardado dentro de la carpeta UploadHuff dentro de los archivos del proyecto");

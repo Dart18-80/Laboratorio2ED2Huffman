@@ -1,0 +1,1 @@
+Pruebala.txt,nono.huff,C:\Users\randr\Source\Repos\Laboratorio2ED2Huffman\Laboratorio2ED2\UploadHuff\nono.huff,0.175,5.711,571.07@Pruebala.txt,nono.huff,C:\Users\randr\Source\Repos\Laboratorio2ED2Huffman\Laboratorio2ED2\UploadHuff\nono.huff,0.175,5.711,571.07@
