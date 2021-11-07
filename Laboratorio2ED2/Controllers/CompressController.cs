@@ -332,7 +332,7 @@ namespace Laboratorio2ED2.Controllers
             try
             {
                 var result = Singleton.Intance.DatosCompresionesLZW.Select(x => new PorpiedadesCompresion { Nombredelarchivooriginal = x.Nombredelarchivooriginal, Nombreyrutadelarchivocomprimido = x.Nombreyrutadelarchivocomprimido, Razóndecompresión = x.Razóndecompresión, Factordecompresión = x.Factordecompresión, Porcentajedereducción = x.Porcentajedereducción });
-                if (result == null) return NotFound();
+                if (result == null) return NotFound();      
                 return Ok(result);
             }
             catch (Exception ex)
